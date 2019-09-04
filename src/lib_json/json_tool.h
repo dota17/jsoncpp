@@ -63,29 +63,18 @@ static inline String codePointToUTF8(unsigned int cp) {
 
   return result;
 }
-
-enum {
-  /// Constant that specify the size of the buffer that must be passed to
-  /// uintToString.
-  uintToStringBufferSize = 3 * sizeof(LargestUInt) + 1
-};
-
-// Defines a char buffer for use with uintToString().
-typedef char UIntToStringBuffer[uintToStringBufferSize];
-
-/** Converts an unsigned integer to string.
- * @param value Unsigned integer to convert to string
- * @param current Input/Output string buffer.
- *        Must have at least uintToStringBufferSize chars free.
- */
-static inline void uintToString(LargestUInt value, char*& current) {
-  *--current = 0;
-  do {
-    *--current = static_cast<char>(value % 10U + static_cast<unsigned>('0'));
-    value /= 10;
-  } while (value != 0);
+template<typename Out, typename In>
+Out convert(const In & value) {
+    std::stringstream stream;
+    Out result;
+    if (typeid(value) == typeid(bool)) {
+	    stream << (value > 0 ? "true" : "false");
+    } else {
+        stream << value;
+    }
+    stream >> result;
+    return result;
 }
-
 /** Change ',' to '.' everywhere in buffer.
  *
  * We had a sophisticated way, but it did not work in WinCE.

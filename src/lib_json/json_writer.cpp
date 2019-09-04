@@ -88,39 +88,6 @@ typedef std::unique_ptr<StreamWriter> StreamWriterPtr;
 #else
 typedef std::auto_ptr<StreamWriter> StreamWriterPtr;
 #endif
-
-String valueToString(LargestInt value) {
-  UIntToStringBuffer buffer;
-  char* current = buffer + sizeof(buffer);
-  if (value == Value::minLargestInt) {
-    uintToString(LargestUInt(Value::maxLargestInt) + 1, current);
-    *--current = '-';
-  } else if (value < 0) {
-    uintToString(LargestUInt(-value), current);
-    *--current = '-';
-  } else {
-    uintToString(LargestUInt(value), current);
-  }
-  assert(current >= buffer);
-  return current;
-}
-
-String valueToString(LargestUInt value) {
-  UIntToStringBuffer buffer;
-  char* current = buffer + sizeof(buffer);
-  uintToString(value, current);
-  assert(current >= buffer);
-  return current;
-}
-
-#if defined(JSON_HAS_INT64)
-
-String valueToString(Int value) { return valueToString(LargestInt(value)); }
-
-String valueToString(UInt value) { return valueToString(LargestUInt(value)); }
-
-#endif // # if defined(JSON_HAS_INT64)
-
 namespace {
 String valueToString(double value,
                      bool useSpecialFloats,
@@ -174,7 +141,6 @@ String valueToString(double value,
   return valueToString(value, false, precision, precisionType);
 }
 
-String valueToString(bool value) { return value ? "true" : "false"; }
 
 static bool isAnyCharRequiredQuoting(char const* s, size_t n) {
   assert(s || !n);

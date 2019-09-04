@@ -8,6 +8,7 @@
 
 #if !defined(JSON_IS_AMALGAMATION)
 #include "value.h"
+#include "../../src/lib_json/json_tool.h"
 #endif // if !defined(JSON_IS_AMALGAMATION)
 #include <ostream>
 #include <string>
@@ -339,18 +340,14 @@ private:
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
-
-#if defined(JSON_HAS_INT64)
-String JSON_API valueToString(Int value);
-String JSON_API valueToString(UInt value);
-#endif // if defined(JSON_HAS_INT64)
-String JSON_API valueToString(LargestInt value);
-String JSON_API valueToString(LargestUInt value);
+template <typename T>
+String JSON_API valueToString(T value) {
+	return Json::convert<String>(T(value));
+}
 String JSON_API
 valueToString(double value,
               unsigned int precision = Value::defaultRealPrecision,
               PrecisionType precisionType = PrecisionType::significantDigits);
-String JSON_API valueToString(bool value);
 String JSON_API valueToQuotedString(const char* value);
 
 /// \brief Output using the StyledStreamWriter.
