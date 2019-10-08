@@ -119,7 +119,7 @@ cd "${_BUILD_DIR_NAME}"
   cmake --build . --config ${BUILD_TYPE} --target install
 
   if [ "${DESTDIR}" != "/usr/local" ]; then
-     ${_BUILD_EXE} install
+     ${_BUILD_EXE} --enable-gcov && install
   fi
 cd -
 
