@@ -59,12 +59,7 @@ matrix:
         BUILD_TOOL="Unix Makefiles"
         BUILD_TYPE=Debug
         LIB_TYPE=shared
-        GCOV_FLAGS='--coverage'
         DESTDIR=/tmp/cmake_json_cpp
-      before_install:
-          - pip install --user cpp-coveralls
       script: ./.travis_scripts/cmake_builder.sh
-      after_success:
-          - coveralls --exclude lib --exclude tests --gcov-options '\-lp'
 notifications:
   email: false
