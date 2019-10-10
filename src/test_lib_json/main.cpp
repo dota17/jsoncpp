@@ -2048,21 +2048,31 @@ JSONTEST_FIXTURE(StyledWriterTest, writeNestedObjects) {
 }
 
 JSONTEST_FIXTURE(StyledWriterTest, multiLineArray) {
-  // Array member has more than 20 print effect rendering lines
-  const Json::String expected("[\n   "
-                              "0,\n   1,\n   2,\n   "
-                              "3,\n   4,\n   5,\n   "
-                              "6,\n   7,\n   8,\n   "
-                              "9,\n   10,\n   11,\n   "
-                              "12,\n   13,\n   14,\n   "
-                              "15,\n   16,\n   17,\n   "
-                              "18,\n   19,\n   20\n]\n");
-  Json::StyledWriter writer;
-  Json::Value root;
-  for (int i = 0; i < 21; i++)
-       root[i] = i;
-  const Json::String result = writer.write(root);
-  JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+  {
+    // Array member has more than 20 print effect rendering lines
+    const Json::String expected("[\n   "
+      "0,\n   1,\n   2,\n   "
+      "3,\n   4,\n   5,\n   "
+      "6,\n   7,\n   8,\n   "
+      "9,\n   10,\n   11,\n   "
+      "12,\n   13,\n   14,\n   "
+      "15,\n   16,\n   17,\n   "
+      "18,\n   19,\n   20\n]\n");
+    Json::Value root;
+    for (int i = 0; i < 21; i++)
+         root[i] = i;
+    const Json::String result = writer.write(root);
+    JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+  }
+  {
+    // Array members do not exceed 21 print effects to render a single line
+    const Json::String expected("[ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]\n");
+    Json::Value root;
+    for (int i = 0; i < 10; i++)
+         root[i] = i;
+    const Json::String result = writer.write(root);
+    JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+  }
 }
 
 JSONTEST_FIXTURE(StyledWriterTest, writeValueWithComment) {
