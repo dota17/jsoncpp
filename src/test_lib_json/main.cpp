@@ -2048,6 +2048,7 @@ JSONTEST_FIXTURE(StyledWriterTest, writeNestedObjects) {
 }
 
 JSONTEST_FIXTURE(StyledWriterTest, multiLineArray) {
+  Json::StyledWriter writer;
   {
     // Array member has more than 20 print effect rendering lines
     const Json::String expected("[\n   "
