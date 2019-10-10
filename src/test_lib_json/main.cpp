@@ -2107,7 +2107,7 @@ JSONTEST_FIXTURE(CharReaderTest, parseWithNoErrorsTestingOffsets) {
   Json::String errs;
   Json::Value root;
   char const doc[] = "{ \"property\" : [\"value\", \"value2\"], \"obj\" : "
-                     "{ \"nested\" : 123, \"bool\" : true}, \"null\" : "
+                     "{ \"nested\" : -6.2e+15, \"bool\" : true}, \"null\" : "
                      "null, \"false\" : false }";
   bool ok = reader->parse(doc, doc + std::strlen(doc), &root, &errs);
   JSONTEST_ASSERT(ok);
@@ -2179,6 +2179,14 @@ JSONTEST_FIXTURE(CharReaderTest, parseWithStackLimit) {
         reader->parse(doc, doc + std::strlen(doc), &root, &errs));
     delete reader;
   }
+}
+
+JSONTEST_FIXTURE(CharReaderTest, testOperator) {
+  const std::string styled = "{ \"property\" : \"value\" }";
+  std::istringstream iss(styled);
+  Json::Value root;
+  iss >> root;
+  JSONTEST_ASSERT_EQUAL("value", root["property"]);
 }
 
 struct CharReaderStrictModeTest : JsonTest::TestCase {};
@@ -2436,6 +2444,25 @@ JSONTEST_FIXTURE(CharReaderAllowDropNullTest, issue178) {
   delete reader;
 }
 
+struct CharReaderAllowNumericKeysTest : JsonTest::TestCase {};
+
+JSONTEST_FIXTURE(CharReaderAllowNumericKeysTest, allowNumericKeys) {
+  Json::CharReaderBuilder b;
+  b.settings_["allowNumericKeys"] = true;
+  Json::Value root;
+  Json::String errs;
+  Json::CharReader* reader(b.newCharReader());
+  char const doc[] = "{15:true,-16:true,12.01:true}";
+  bool ok = reader->parse(doc, doc + std::strlen(doc), &root, &errs);
+  JSONTEST_ASSERT(ok);
+  JSONTEST_ASSERT_STRING_EQUAL("", errs);
+  JSONTEST_ASSERT_EQUAL(3u, root.size());
+  JSONTEST_ASSERT_EQUAL(true, root.get("15", false));
+  JSONTEST_ASSERT_EQUAL(true, root.get("-16", false));
+  JSONTEST_ASSERT_EQUAL(true, root.get("12.01", false));
+  delete reader;
+}
+
 struct CharReaderAllowSingleQuotesTest : JsonTest::TestCase {};
 
 JSONTEST_FIXTURE(CharReaderAllowSingleQuotesTest, issue182) {
@@ -2566,6 +2593,41 @@ JSONTEST_FIXTURE(CharReaderAllowSpecialFloatsTest, issue209) {
                           root["NegInf"].asDouble());
   }
   delete reader;
+}
+
+struct EscapeSequenceTest : JsonTest::TestCase {};
+
+JSONTEST_FIXTURE(EscapeSequenceTest, parseEscapeSequence) {
+  Json::CharReaderBuilder b;
+  Json::CharReader* reader(b.newCharReader());
+  Json::Value root;
+  Json::String errs;
+  char const doc[] = "[\"\\\"\",\"\\/\",\"\\\\\",\"\\b\","
+                     "\"\\f\",\"\\n\",\"\\r\",\"\\t\","
+                     "\"\\u0278\",\"\\ud852\\udf62\"]";
+  bool ok = reader->parse(doc, doc + std::strlen(doc), &root, &errs);
+  JSONTEST_ASSERT(ok);
+  JSONTEST_ASSERT(errs.empty());
+  delete reader;
+}
+
+JSONTEST_FIXTURE(EscapeSequenceTest, writeEscapeSequence) {
+  Json::FastWriter writer;
+  const Json::String expected(
+      "[\"\\\"\",\"\\\\\",\"\\b\",\"\\f\",\"\\n\",\"\\r\",\"\\t\",\"\\u0278\","
+      "\"\\ud852\\udf62\"]\n");
+  Json::Value root;
+  root[0] = "\"";
+  root[1] = "\\";
+  root[2] = "\b";
+  root[3] = "\f";
+  root[4] = "\n";
+  root[5] = "\r";
+  root[6] = "\t";
+  root[7] = "ɸ";
+  root[8] = "𤭢";
+  const Json::String result = writer.write(root);
+  JSONTEST_ASSERT_STRING_EQUAL(expected, result);
 }
 
 struct BuilderTest : JsonTest::TestCase {};
@@ -2746,6 +2808,7 @@ int main(int argc, const char* argv[]) {
   JSONTEST_REGISTER_FIXTURE(runner, CharReaderTest, parseChineseWithOneError);
   JSONTEST_REGISTER_FIXTURE(runner, CharReaderTest, parseWithDetailError);
   JSONTEST_REGISTER_FIXTURE(runner, CharReaderTest, parseWithStackLimit);
+  JSONTEST_REGISTER_FIXTURE(runner, CharReaderTest, testOperator);
 
   JSONTEST_REGISTER_FIXTURE(runner, CharReaderStrictModeTest, dupKeys);
 
@@ -2760,11 +2823,18 @@ int main(int argc, const char* argv[]) {
 
   JSONTEST_REGISTER_FIXTURE(runner, CharReaderAllowDropNullTest, issue178);
 
+  JSONTEST_REGISTER_FIXTURE(runner, CharReaderAllowNumericKeysTest,
+                            allowNumericKeys);
+
   JSONTEST_REGISTER_FIXTURE(runner, CharReaderAllowSingleQuotesTest, issue182);
 
   JSONTEST_REGISTER_FIXTURE(runner, CharReaderAllowZeroesTest, issue176);
 
   JSONTEST_REGISTER_FIXTURE(runner, CharReaderAllowSpecialFloatsTest, issue209);
+
+  JSONTEST_REGISTER_FIXTURE(runner, EscapeSequenceTest, parseEscapeSequence);
+
+  JSONTEST_REGISTER_FIXTURE(runner, EscapeSequenceTest, writeEscapeSequence);
 
   JSONTEST_REGISTER_FIXTURE(runner, BuilderTest, settings);
 
