@@ -4,7 +4,8 @@ comment:
 coverage:
   precision: 2
   round: nearest
-  
+  range: "75...95"
+  bot: codecov-bot
   ignore:
   - devtool/.*
   - doc/.*
