@@ -2437,6 +2437,18 @@ JSONTEST_FIXTURE(ReaderTest, parseWithNoErrors) {
   JSONTEST_ASSERT(reader.getStructuredErrors().empty());
 }
 
+JSONTEST_FIXTURE(ReaderTest, streamParseWithNoErrors) {
+  Json::Reader reader;
+  Json::Value root;
+  std::string styled = "{\"property\" : \"value\"}";
+  std::istringstream iss(styled);
+
+  bool ok = reader.parse(iss, root);
+  JSONTEST_ASSERT(ok);
+  JSONTEST_ASSERT(reader.getFormattedErrorMessages().empty());
+  JSONTEST_ASSERT(reader.getStructuredErrors().empty());
+}
+
 JSONTEST_FIXTURE(ReaderTest, parseWithNoErrorsTestingOffsets) {
   Json::Reader reader;
   Json::Value root;
@@ -3180,6 +3192,7 @@ int main(int argc, const char* argv[]) {
   JSONTEST_REGISTER_FIXTURE(runner, StreamWriterTest, writeZeroes);
 
   JSONTEST_REGISTER_FIXTURE(runner, ReaderTest, parseWithNoErrors);
+  JSONTEST_REGISTER_FIXTURE(runner, ReaderTest, streamParseWithNoErrors);
   JSONTEST_REGISTER_FIXTURE(runner, ReaderTest,
                             parseWithNoErrorsTestingOffsets);
   JSONTEST_REGISTER_FIXTURE(runner, ReaderTest, parseWithOneError);
