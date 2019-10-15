@@ -100,10 +100,10 @@ bool Reader::parse(const std::string& document, Value& root,
 bool Reader::parse(std::istream& is, Value& root, bool collectComments) {
   // std::istream_iterator<char> begin(is);
   // std::istream_iterator<char> end;
-  // Those would allow streamed input from a file, if parse() were a
+  // Those will allow streamed input from a file, if parse() were a
   // template function.
 
-  // Since String is reference-counted, this at least does not
+  // because String is reference-counted, this at least does not
   // create an extra copy.
   String doc;
   std::getline(is, doc, static_cast<char> EOF);
@@ -135,7 +135,7 @@ bool Reader::parse(const char* beginDoc, const char* endDoc, Value& root,
     root.setComment(commentsBefore_, commentAfter);
   if (features_.strictRoot_) {
     if (!root.isArray() && !root.isObject()) {
-      // Set error location to start of doc, ideally should be first token found
+      // Set error locations to start of doc, ideally should be first token found
       // in doc
       token.type_ = tokenError;
       token.start_ = beginDoc;
@@ -152,7 +152,7 @@ bool Reader::parse(const char* beginDoc, const char* endDoc, Value& root,
 bool Reader::readValue() {
   // readValue() may call itself only if it calls readObject() or ReadArray().
   // These methods execute nodes_.push() just before and nodes_.pop)() just
-  // after calling readValue(). parse() executes one nodes_.push(), so > instead
+  // after calling readValue(). parse() method executes one nodes_.push(), so > instead
   // of >=.
   if (nodes_.size() > stackLimit_g)
     throwRuntimeError("Exceeded stackLimit in readValue().");
