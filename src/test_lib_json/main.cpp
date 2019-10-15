@@ -141,9 +141,17 @@ JSONTEST_FIXTURE(ValueTest, checkNormalizeFloatingPointStr) {
   JSONTEST_ASSERT_STRING_EQUAL("1234.0", normalizeFloatingPointStr("1234.0"));
   JSONTEST_ASSERT_STRING_EQUAL("1234.0e0",
                                normalizeFloatingPointStr("1234.0e0"));
+  JSONTEST_ASSERT_STRING_EQUAL("1234.0e-1",
+                               normalizeFloatingPointStr("1234.0e-1"));
   JSONTEST_ASSERT_STRING_EQUAL("1234.0e+0",
                                normalizeFloatingPointStr("1234.0e+0"));
+  JSONTEST_ASSERT_STRING_EQUAL("1234.0e+1",
+                               normalizeFloatingPointStr("1234.0e+001"));
   JSONTEST_ASSERT_STRING_EQUAL("1234e-1", normalizeFloatingPointStr("1234e-1"));
+  JSONTEST_ASSERT_STRING_EQUAL("1234e+0",
+                               normalizeFloatingPointStr("1234e+000"));
+  JSONTEST_ASSERT_STRING_EQUAL("1234e+1",
+                               normalizeFloatingPointStr("1234e+001"));
   JSONTEST_ASSERT_STRING_EQUAL("1234e10", normalizeFloatingPointStr("1234e10"));
   JSONTEST_ASSERT_STRING_EQUAL("1234e10",
                                normalizeFloatingPointStr("1234e010"));
@@ -155,8 +163,6 @@ JSONTEST_FIXTURE(ValueTest, checkNormalizeFloatingPointStr) {
                                normalizeFloatingPointStr("1234e+100"));
   JSONTEST_ASSERT_STRING_EQUAL("1234e-100",
                                normalizeFloatingPointStr("1234e-100"));
-  JSONTEST_ASSERT_STRING_EQUAL("1234e+1",
-                               normalizeFloatingPointStr("1234e+001"));
 }
 
 JSONTEST_FIXTURE(ValueTest, memberCount) {
@@ -172,6 +178,9 @@ JSONTEST_FIXTURE(ValueTest, memberCount) {
   JSONTEST_ASSERT_PRED(checkMemberCount(emptyString_, 0));
   JSONTEST_ASSERT_PRED(checkMemberCount(string_, 0));
   JSONTEST_ASSERT_PRED(checkMemberCount(true_, 0));
+  JSONTEST_ASSERT_PRED(checkMemberCount(false_, 0));
+  JSONTEST_ASSERT_PRED(checkMemberCount(string1_, 0));
+  JSONTEST_ASSERT_PRED(checkMemberCount(float_, 0));
 }
 
 JSONTEST_FIXTURE(ValueTest, objects) {
@@ -1382,6 +1391,10 @@ void ValueTest::checkIs(const Json::Value& value, const IsCheck& check) {
 
 JSONTEST_FIXTURE(ValueTest, compareNull) {
   JSONTEST_ASSERT_PRED(checkIsEqual(Json::Value(), Json::Value()));
+  JSONTEST_ASSERT_PRED(
+      checkIsEqual(Json::Value::nullSingleton(), Json::Value()));
+  JSONTEST_ASSERT_PRED(
+      checkIsEqual(Json::Value::nullSingleton(), Json::Value::nullSingleton()));
 }
 
 JSONTEST_FIXTURE(ValueTest, compareInt) {
@@ -1436,10 +1449,13 @@ JSONTEST_FIXTURE(ValueTest, compareArray) {
   l2bArray.append(10);
   JSONTEST_ASSERT_PRED(checkIsLess(emptyArray, l1aArray));
   JSONTEST_ASSERT_PRED(checkIsLess(emptyArray, l2aArray));
-  JSONTEST_ASSERT_PRED(checkIsLess(l1aArray, l2aArray));
+  JSONTEST_ASSERT_PRED(checkIsLess(l1aArray, l1bArray));
+  JSONTEST_ASSERT_PRED(checkIsLess(l1bArray, l2aArray));
   JSONTEST_ASSERT_PRED(checkIsLess(l2aArray, l2bArray));
   JSONTEST_ASSERT_PRED(checkIsEqual(emptyArray, Json::Value(emptyArray)));
   JSONTEST_ASSERT_PRED(checkIsEqual(l1aArray, Json::Value(l1aArray)));
+  JSONTEST_ASSERT_PRED(checkIsEqual(l1bArray, Json::Value(l1bArray)));
+  JSONTEST_ASSERT_PRED(checkIsEqual(l2aArray, Json::Value(l2aArray)));
   JSONTEST_ASSERT_PRED(checkIsEqual(l2bArray, Json::Value(l2bArray)));
 }
 
@@ -1449,16 +1465,41 @@ JSONTEST_FIXTURE(ValueTest, compareObject) {
   Json::Value l1aObject;
   l1aObject["key1"] = 0;
   Json::Value l1bObject;
-  l1aObject["key1"] = 10;
+  l1bObject["key1"] = 10;
   Json::Value l2aObject;
   l2aObject["key1"] = 0;
   l2aObject["key2"] = 0;
+  Json::Value l2bObject;
+  l2bObject["key1"] = 10;
+  l2bObject["key2"] = 0;
   JSONTEST_ASSERT_PRED(checkIsLess(emptyObject, l1aObject));
-  JSONTEST_ASSERT_PRED(checkIsLess(emptyObject, l2aObject));
-  JSONTEST_ASSERT_PRED(checkIsLess(l1aObject, l2aObject));
+  JSONTEST_ASSERT_PRED(checkIsLess(l1aObject, l1bObject));
+  JSONTEST_ASSERT_PRED(checkIsLess(l1bObject, l2aObject));
+  JSONTEST_ASSERT_PRED(checkIsLess(l2aObject, l2bObject));
   JSONTEST_ASSERT_PRED(checkIsEqual(emptyObject, Json::Value(emptyObject)));
   JSONTEST_ASSERT_PRED(checkIsEqual(l1aObject, Json::Value(l1aObject)));
+  JSONTEST_ASSERT_PRED(checkIsEqual(l1bObject, Json::Value(l1bObject)));
   JSONTEST_ASSERT_PRED(checkIsEqual(l2aObject, Json::Value(l2aObject)));
+  JSONTEST_ASSERT_PRED(checkIsEqual(l2bObject, Json::Value(l2bObject)));
+  {
+    Json::Value aObject;
+    aObject["a"] = 10;
+    Json::Value bObject;
+    bObject["b"] = 0;
+    Json::Value cObject;
+    cObject["c"] = 20;
+    cObject["f"] = 15;
+    Json::Value dObject;
+    dObject["d"] = -2;
+    dObject["e"] = 10;
+    JSONTEST_ASSERT_PRED(checkIsLess(aObject, bObject));
+    JSONTEST_ASSERT_PRED(checkIsLess(bObject, cObject));
+    JSONTEST_ASSERT_PRED(checkIsLess(cObject, dObject));
+    JSONTEST_ASSERT_PRED(checkIsEqual(aObject, Json::Value(aObject)));
+    JSONTEST_ASSERT_PRED(checkIsEqual(bObject, Json::Value(bObject)));
+    JSONTEST_ASSERT_PRED(checkIsEqual(cObject, Json::Value(cObject)));
+    JSONTEST_ASSERT_PRED(checkIsEqual(dObject, Json::Value(dObject)));
+  }
 }
 
 JSONTEST_FIXTURE(ValueTest, compareType) {
@@ -1506,6 +1547,24 @@ JSONTEST_FIXTURE(ValueTest, CopyObject) {
   JSONTEST_ASSERT(copy1 == "string value");
   copy2.copy(arrayVal);
   JSONTEST_ASSERT(copy2.size() == 5);
+  {
+    Json::Value srcObject, objectCopy, otherObject;
+    srcObject["key0"] = 10;
+    objectCopy.copy(srcObject);
+    JSONTEST_ASSERT(srcObject["key0"] == 10);
+    JSONTEST_ASSERT(objectCopy["key0"] == 10);
+    JSONTEST_ASSERT(srcObject.getMemberNames().size() == 1);
+    JSONTEST_ASSERT(objectCopy.getMemberNames().size() == 1);
+    otherObject["key1"] = 15;
+    otherObject["key2"] = 16;
+    JSONTEST_ASSERT(otherObject.getMemberNames().size() == 2);
+    objectCopy.copy(otherObject);
+    JSONTEST_ASSERT(objectCopy["key1"] == 15);
+    JSONTEST_ASSERT(objectCopy["key2"] == 16);
+    JSONTEST_ASSERT(objectCopy.getMemberNames().size() == 2);
+    otherObject["key1"] = 20;
+    JSONTEST_ASSERT(objectCopy["key1"] == 15);
+  }
 }
 
 void ValueTest::checkIsLess(const Json::Value& x, const Json::Value& y) {
@@ -1844,9 +1903,9 @@ JSONTEST_FIXTURE(ValueTest, precision) {
   JSONTEST_ASSERT_STRING_EQUAL(expected, result);
 }
 
-struct WriterTest : JsonTest::TestCase {};
+struct FastWriterTest : JsonTest::TestCase {};
 
-JSONTEST_FIXTURE(WriterTest, dropNullPlaceholders) {
+JSONTEST_FIXTURE(FastWriterTest, dropNullPlaceholders) {
   Json::FastWriter writer;
   Json::Value nullValue;
   JSONTEST_ASSERT(writer.write(nullValue) == "null\n");
@@ -1855,7 +1914,458 @@ JSONTEST_FIXTURE(WriterTest, dropNullPlaceholders) {
   JSONTEST_ASSERT(writer.write(nullValue) == "\n");
 }
 
+JSONTEST_FIXTURE(FastWriterTest, enableYAMLCompatibility) {
+  Json::FastWriter writer;
+  Json::Value root;
+  root["hello"] = "world";
+
+  JSONTEST_ASSERT(writer.write(root) == "{\"hello\":\"world\"}\n");
+
+  writer.enableYAMLCompatibility();
+  JSONTEST_ASSERT(writer.write(root) == "{\"hello\": \"world\"}\n");
+}
+
+JSONTEST_FIXTURE(FastWriterTest, omitEndingLineFeed) {
+  Json::FastWriter writer;
+  Json::Value nullValue;
+
+  JSONTEST_ASSERT(writer.write(nullValue) == "null\n");
+
+  writer.omitEndingLineFeed();
+  JSONTEST_ASSERT(writer.write(nullValue) == "null");
+}
+
+JSONTEST_FIXTURE(FastWriterTest, writeNumericValue) {
+  Json::FastWriter writer;
+  const Json::String expected("{"
+                              "\"emptyValue\":null,"
+                              "\"false\":false,"
+                              "\"null\":\"null\","
+                              "\"number\":-6200000000000000.0,"
+                              "\"real\":1.256,"
+                              "\"uintValue\":17"
+                              "}\n");
+  Json::Value root;
+  root["emptyValue"] = Json::nullValue;
+  root["false"] = false;
+  root["null"] = "null";
+  root["number"] = -6.2e+15;
+  root["real"] = 1.256;
+  root["uintValue"] = Json::Value(17U);
+
+  const Json::String result = writer.write(root);
+  JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+}
+
+JSONTEST_FIXTURE(FastWriterTest, writeArrays) {
+  Json::FastWriter writer;
+  const Json::String expected("{"
+                              "\"property1\":[\"value1\",\"value2\"],"
+                              "\"property2\":[]"
+                              "}\n");
+  Json::Value root;
+  root["property1"][0] = "value1";
+  root["property1"][1] = "value2";
+  root["property2"] = Json::arrayValue;
+
+  const Json::String result = writer.write(root);
+  JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+}
+
+JSONTEST_FIXTURE(FastWriterTest, writeNestedObjects) {
+  Json::FastWriter writer;
+  const Json::String expected("{"
+                              "\"object1\":{"
+                              "\"bool\":true,"
+                              "\"nested\":123"
+                              "},"
+                              "\"object2\":{}"
+                              "}\n");
+  Json::Value root, child;
+  child["nested"] = 123;
+  child["bool"] = true;
+  root["object1"] = child;
+  root["object2"] = Json::objectValue;
+
+  const Json::String result = writer.write(root);
+  JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+}
+
+struct StyledWriterTest : JsonTest::TestCase {};
+
+JSONTEST_FIXTURE(StyledWriterTest, writeNumericValue) {
+  Json::StyledWriter writer;
+  const Json::String expected("{\n"
+                              "   \"emptyValue\" : null,\n"
+                              "   \"false\" : false,\n"
+                              "   \"null\" : \"null\",\n"
+                              "   \"number\" : -6200000000000000.0,\n"
+                              "   \"real\" : 1.256,\n"
+                              "   \"uintValue\" : 17\n"
+                              "}\n");
+  Json::Value root;
+  root["emptyValue"] = Json::nullValue;
+  root["false"] = false;
+  root["null"] = "null";
+  root["number"] = -6.2e+15;
+  root["real"] = 1.256;
+  root["uintValue"] = Json::Value(17U);
+
+  const Json::String result = writer.write(root);
+  JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+}
+
+JSONTEST_FIXTURE(StyledWriterTest, writeArrays) {
+  Json::StyledWriter writer;
+  const Json::String expected("{\n"
+                              "   \"property1\" : [ \"value1\", \"value2\" ],\n"
+                              "   \"property2\" : []\n"
+                              "}\n");
+  Json::Value root;
+  root["property1"][0] = "value1";
+  root["property1"][1] = "value2";
+  root["property2"] = Json::arrayValue;
+
+  const Json::String result = writer.write(root);
+  JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+}
+
+JSONTEST_FIXTURE(StyledWriterTest, writeNestedObjects) {
+  Json::StyledWriter writer;
+  const Json::String expected("{\n"
+                              "   \"object1\" : {\n"
+                              "      \"bool\" : true,\n"
+                              "      \"nested\" : 123\n"
+                              "   },\n"
+                              "   \"object2\" : {}\n"
+                              "}\n");
+  Json::Value root, child;
+  child["nested"] = 123;
+  child["bool"] = true;
+  root["object1"] = child;
+  root["object2"] = Json::objectValue;
+
+  const Json::String result = writer.write(root);
+  JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+}
+
+JSONTEST_FIXTURE(StyledWriterTest, multiLineArray) {
+  Json::StyledWriter writer;
+  {
+    // Array member has more than 20 print effect rendering lines
+    const Json::String expected("[\n   "
+      "0,\n   1,\n   2,\n   "
+      "3,\n   4,\n   5,\n   "
+      "6,\n   7,\n   8,\n   "
+      "9,\n   10,\n   11,\n   "
+      "12,\n   13,\n   14,\n   "
+      "15,\n   16,\n   17,\n   "
+      "18,\n   19,\n   20\n]\n");
+    Json::Value root;
+    for (int i = 0; i < 21; i++)
+         root[i] = i;
+    const Json::String result = writer.write(root);
+    JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+  }
+  {
+    // Array members do not exceed 21 print effects to render a single line
+    const Json::String expected("[ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]\n");
+    Json::Value root;
+    for (int i = 0; i < 10; i++)
+         root[i] = i;
+    const Json::String result = writer.write(root);
+    JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+  }
+}
+
+JSONTEST_FIXTURE(StyledWriterTest, writeValueWithComment) {
+  Json::StyledWriter writer;
+  {
+    const Json::String expected("\n//commentBeforeValue\n\"hello\"\n");
+    Json::Value root = "hello";
+    root.setComment(Json::String("//commentBeforeValue"),
+                    Json::commentBefore);
+    const Json::String result = writer.write(root);
+    JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+  }
+  {
+    const Json::String expected("\"hello\" //commentAfterValueOnSameLine\n");
+    Json::Value root = "hello";
+    root.setComment(Json::String("//commentAfterValueOnSameLine"),
+                    Json::commentAfterOnSameLine);
+    const Json::String result = writer.write(root);
+    JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+  }
+  {
+    const Json::String expected("\"hello\"\n//commentAfter\n\n");
+    Json::Value root = "hello";
+    root.setComment(Json::String("//commentAfter"),
+                    Json::commentAfter);
+    const Json::String result = writer.write(root);
+    JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+  }
+}
+
+struct StyledStreamWriterTest : JsonTest::TestCase {};
+
+JSONTEST_FIXTURE(StyledStreamWriterTest, writeNumericValue) {
+  Json::StyledStreamWriter writer;
+  const Json::String expected("{\n"
+                              "\t\"emptyValue\" : null,\n"
+                              "\t\"false\" : false,\n"
+                              "\t\"null\" : \"null\",\n"
+                              "\t\"number\" : -6200000000000000.0,\n"
+                              "\t\"real\" : 1.256,\n"
+                              "\t\"uintValue\" : 17\n"
+                              "}\n");
+
+  Json::Value root;
+  root["emptyValue"] = Json::nullValue;
+  root["false"] = false;
+  root["null"] = "null";
+  root["number"] = -6.2e+15; // big float number
+  root["real"] = 1.256;      // float number
+  root["uintValue"] = Json::Value(17U);
+
+  Json::OStringStream sout;
+  writer.write(sout, root);
+  const Json::String result = sout.str();
+  JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+}
+
+JSONTEST_FIXTURE(StyledStreamWriterTest, writeArrays) {
+  Json::StyledStreamWriter writer;
+  const Json::String expected("{\n"
+                              "\t\"property1\" : [ \"value1\", \"value2\" ],\n"
+                              "\t\"property2\" : []\n"
+                              "}\n");
+  Json::Value root;
+  root["property1"][0] = "value1";
+  root["property1"][1] = "value2";
+  root["property2"] = Json::arrayValue;
+
+  Json::OStringStream sout;
+  writer.write(sout, root);
+  const Json::String result = sout.str();
+  JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+}
+
+JSONTEST_FIXTURE(StyledStreamWriterTest, writeNestedObjects) {
+  Json::StyledStreamWriter writer;
+  const Json::String expected("{\n"
+                              "\t\"object1\" : \n"
+                              "\t"
+                              "{\n"
+                              "\t\t\"bool\" : true,\n"
+                              "\t\t\"nested\" : 123\n"
+                              "\t},\n"
+                              "\t\"object2\" : {}\n"
+                              "}\n");
+  Json::Value root, child;
+  child["nested"] = 123;
+  child["bool"] = true;
+  root["object1"] = child;
+  root["object2"] = Json::objectValue;
+
+  Json::OStringStream sout;
+  writer.write(sout, root);
+  const Json::String result = sout.str();
+  JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+}
+
+JSONTEST_FIXTURE(StyledStreamWriterTest, multiLineArray) {
+  Json::StyledStreamWriter writer;
+  {
+    // Array member has more than 20 print effect rendering lines
+    const Json::String expected(
+      "["
+      "\n\t0,"
+      "\n\t1,"
+      "\n\t2,"
+      "\n\t3,"
+      "\n\t4,"
+      "\n\t5,"
+      "\n\t6,"
+      "\n\t7,"
+      "\n\t8,"
+      "\n\t9,"
+      "\n\t10,"
+      "\n\t11,"
+      "\n\t12,"
+      "\n\t13,"
+      "\n\t14,"
+      "\n\t15,"
+      "\n\t16,"
+      "\n\t17,"
+      "\n\t18,"
+      "\n\t19,"
+      "\n\t20\n]\n");
+    Json::StyledStreamWriter writer;
+    Json::Value root;
+    for (int i = 0; i < 21; i++)
+         root[i] = i;
+    Json::OStringStream sout;
+    writer.write(sout, root);
+    const Json::String result = sout.str();
+    JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+  }
+  { 
+    // Array members do not exceed 21 print effects to render a single line
+    const Json::String expected("[ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]\n");
+    Json::Value root;
+    for (int i = 0; i < 10; i++)
+         root[i] = i;
+    Json::OStringStream sout;
+    writer.write(sout, root);
+    const Json::String result = sout.str();
+    JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+  }
+}
+
+JSONTEST_FIXTURE(StyledStreamWriterTest, writeValueWithComment) {
+  Json::StyledStreamWriter writer("\t");
+  {
+    const Json::String expected("//commentBeforeValue\n\"hello\"\n");
+    Json::Value root = "hello";
+    Json::OStringStream sout;
+    root.setComment(Json::String("//commentBeforeValue"),
+                    Json::commentBefore);
+    writer.write(sout, root);
+    const Json::String result = sout.str();
+    JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+  }
+  {
+    const Json::String expected("\"hello\" //commentAfterValueOnSameLine\n");
+    Json::Value root = "hello";
+    Json::OStringStream sout;
+    root.setComment(Json::String("//commentAfterValueOnSameLine"),
+                    Json::commentAfterOnSameLine);
+    writer.write(sout, root);
+    const Json::String result = sout.str();
+    JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+  }
+  {
+    const Json::String expected("\"hello\"\n//commentAfter\n");
+    Json::Value root = "hello";
+    Json::OStringStream sout;
+    root.setComment(Json::String("//commentAfter"),
+                    Json::commentAfter);
+    writer.write(sout, root);
+    const Json::String result = sout.str();
+    JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+  }
+}
+
 struct StreamWriterTest : JsonTest::TestCase {};
+
+JSONTEST_FIXTURE(StreamWriterTest, writeNumericValue) {
+  Json::StreamWriterBuilder writer;
+  const Json::String expected("{\n"
+                              "\t\"emptyValue\" : null,\n"
+                              "\t\"false\" : false,\n"
+                              "\t\"null\" : \"null\",\n"
+                              "\t\"number\" : -6200000000000000.0,\n"
+                              "\t\"real\" : 1.256,\n"
+                              "\t\"uintValue\" : 17\n"
+                              "}");
+  Json::Value root;
+  root["emptyValue"] = Json::nullValue;
+  root["false"] = false;
+  root["null"] = "null";
+  root["number"] = -6.2e+15;
+  root["real"] = 1.256;
+  root["uintValue"] = Json::Value(17U);
+
+  const Json::String result = Json::writeString(writer, root);
+  JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+}
+
+JSONTEST_FIXTURE(StreamWriterTest, writeArrays) {
+  Json::StreamWriterBuilder writer;
+  const Json::String expected("{\n"
+                              "\t\"property1\" : \n"
+                              "\t[\n"
+                              "\t\t\"value1\",\n"
+                              "\t\t\"value2\"\n"
+                              "\t],\n"
+                              "\t\"property2\" : []\n"
+                              "}");
+
+  Json::Value root;
+  root["property1"][0] = "value1";
+  root["property1"][1] = "value2";
+  root["property2"] = Json::arrayValue;
+
+  const Json::String result = Json::writeString(writer, root);
+  JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+}
+
+JSONTEST_FIXTURE(StreamWriterTest, writeNestedObjects) {
+  Json::StreamWriterBuilder writer;
+  const Json::String expected("{\n"
+                              "\t\"object1\" : \n"
+                              "\t{\n"
+                              "\t\t\"bool\" : true,\n"
+                              "\t\t\"nested\" : 123\n"
+                              "\t},\n"
+                              "\t\"object2\" : {}\n"
+                              "}");
+
+  Json::Value root, child;
+  child["nested"] = 123;
+  child["bool"] = true;
+  root["object1"] = child;
+  root["object2"] = Json::objectValue;
+
+  const Json::String result = Json::writeString(writer, root);
+  JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+}
+
+JSONTEST_FIXTURE(StreamWriterTest, multiLineArray) {
+  Json::StreamWriterBuilder wb;
+  wb.settings_["commentStyle"] = "None";
+  {
+    // When wb.settings_["commentStyle"] = "None", the effect of
+    // printing multiple lines will be displayed when there are 
+    // more than 20 array members.
+    const Json::String expected(
+      "[\n\t0,"
+      "\n\t1,"
+      "\n\t2,"
+      "\n\t3,"
+      "\n\t4,"
+      "\n\t5,"
+      "\n\t6,"
+      "\n\t7,"
+      "\n\t8,"
+      "\n\t9,"
+      "\n\t10,"
+      "\n\t11,"
+      "\n\t12,"
+      "\n\t13,"
+      "\n\t14,"
+      "\n\t15,"
+      "\n\t16,"
+      "\n\t17,"
+      "\n\t18,"
+      "\n\t19,"
+      "\n\t20\n]");
+    Json::Value root;
+    for (int i = 0; i < 21; i++)
+         root[i] = i;
+    const Json::String result = Json::writeString(wb, root);
+    JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+  }
+  {
+    //Array members do not exceed 21 print effects to render a single line
+    const Json::String expected("[ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]");
+    Json::Value root;
+    for (int i = 0; i < 10; i++)
+         root[i] = i;
+    const Json::String result = Json::writeString(wb, root);
+    JSONTEST_ASSERT_STRING_EQUAL(expected, result);
+  }
+}
 
 JSONTEST_FIXTURE(StreamWriterTest, dropNullPlaceholders) {
   Json::StreamWriterBuilder b;
@@ -1864,6 +2374,34 @@ JSONTEST_FIXTURE(StreamWriterTest, dropNullPlaceholders) {
   JSONTEST_ASSERT(Json::writeString(b, nullValue) == "null");
   b.settings_["dropNullPlaceholders"] = true;
   JSONTEST_ASSERT(Json::writeString(b, nullValue).empty());
+}
+
+JSONTEST_FIXTURE(StreamWriterTest, enableYAMLCompatibility) {
+  Json::StreamWriterBuilder b;
+  Json::Value root;
+  root["hello"] = "world";
+
+  b.settings_["indentation"] = "";
+  JSONTEST_ASSERT(Json::writeString(b, root) == "{\"hello\":\"world\"}");
+
+  b.settings_["enableYAMLCompatibility"] = true;
+  JSONTEST_ASSERT(Json::writeString(b, root) == "{\"hello\": \"world\"}");
+
+  b.settings_["enableYAMLCompatibility"] = false;
+  JSONTEST_ASSERT(Json::writeString(b, root) == "{\"hello\":\"world\"}");
+}
+
+JSONTEST_FIXTURE(StreamWriterTest, indentation) {
+  Json::StreamWriterBuilder b;
+  Json::Value root;
+  root["hello"] = "world";
+
+  b.settings_["indentation"] = "";
+  JSONTEST_ASSERT(Json::writeString(b, root) == "{\"hello\":\"world\"}");
+
+  b.settings_["indentation"] = "\t";
+  JSONTEST_ASSERT(Json::writeString(b, root) ==
+                  "{\n\t\"hello\" : \"world\"\n}");
 }
 
 JSONTEST_FIXTURE(StreamWriterTest, writeZeroes) {
@@ -2116,22 +2654,35 @@ JSONTEST_FIXTURE(CharReaderFailIfExtraTest, issue164) {
     Json::String errs;
     bool ok = reader->parse(doc, doc + std::strlen(doc), &root, &errs);
     JSONTEST_ASSERT(!ok);
-    JSONTEST_ASSERT_STRING_EQUAL(errs,
-                                 "* Line 1, Column 13\n"
-                                 "  Extra non-whitespace after JSON value.\n");
+    JSONTEST_ASSERT_STRING_EQUAL("* Line 1, Column 13\n"
+                                 "  Extra non-whitespace after JSON value.\n",
+                                 errs);
     JSONTEST_ASSERT_EQUAL("property", root);
     delete reader;
   }
   {
-    b.settings_["failIfExtra"] = false;
     b.strictMode(&b.settings_);
     Json::CharReader* reader(b.newCharReader());
     Json::String errs;
     bool ok = reader->parse(doc, doc + std::strlen(doc), &root, &errs);
     JSONTEST_ASSERT(!ok);
-    JSONTEST_ASSERT_STRING_EQUAL(errs,
-                                 "* Line 1, Column 13\n"
-                                 "  Extra non-whitespace after JSON value.\n");
+    JSONTEST_ASSERT_STRING_EQUAL("* Line 1, Column 13\n"
+                                 "  Extra non-whitespace after JSON value.\n",
+                                 errs);
+    JSONTEST_ASSERT_EQUAL("property", root);
+    delete reader;
+  }
+  {
+    b.strictMode(&b.settings_);
+    b.settings_["failIfExtra"] = false;
+    Json::CharReader* reader(b.newCharReader());
+    Json::String errs;
+    bool ok = reader->parse(doc, doc + std::strlen(doc), &root, &errs);
+    JSONTEST_ASSERT(!ok);
+    JSONTEST_ASSERT_STRING_EQUAL(
+        "* Line 1, Column 1\n"
+        "  A valid JSON document must be either an array or an object value.\n",
+        errs);
     JSONTEST_ASSERT_EQUAL("property", root);
     delete reader;
   }
@@ -2382,17 +2933,20 @@ JSONTEST_FIXTURE(CharReaderAllowSpecialFloatsTest, issue209) {
   Json::String errs;
   Json::CharReader* reader(b.newCharReader());
   {
-    char const doc[] = "{\"a\":NaN,\"b\":Infinity,\"c\":-Infinity}";
+    char const doc[] =
+        "{\"a\":NaN,\"b\":Infinity,\"c\":-Infinity,\"d\":+Infinity}";
     bool ok = reader->parse(doc, doc + std::strlen(doc), &root, &errs);
     JSONTEST_ASSERT(ok);
     JSONTEST_ASSERT_STRING_EQUAL("", errs);
-    JSONTEST_ASSERT_EQUAL(3u, root.size());
+    JSONTEST_ASSERT_EQUAL(4u, root.size());
     double n = root["a"].asDouble();
     JSONTEST_ASSERT(std::isnan(n));
     JSONTEST_ASSERT_EQUAL(std::numeric_limits<double>::infinity(),
                           root.get("b", 0.0));
     JSONTEST_ASSERT_EQUAL(-std::numeric_limits<double>::infinity(),
                           root.get("c", 0.0));
+    JSONTEST_ASSERT_EQUAL(std::numeric_limits<double>::infinity(),
+                          root.get("d", 0.0));
   }
 
   struct TestData {
@@ -2416,7 +2970,8 @@ JSONTEST_FIXTURE(CharReaderAllowSpecialFloatsTest, issue209) {
       {__LINE__, false, "{\"a\":.Infinity}"}, //
       {__LINE__, false, "{\"a\":_Infinity}"}, //
       {__LINE__, false, "{\"a\":_nfinity}"},  //
-      {__LINE__, true, "{\"a\":-Infinity}"}   //
+      {__LINE__, true, "{\"a\":-Infinity}"},  //
+      {__LINE__, true, "{\"a\":+Infinity}"}   //
   };
   for (const auto& td : test_data) {
     bool ok = reader->parse(&*td.in.begin(), &*td.in.begin() + td.in.size(),
@@ -2430,7 +2985,7 @@ JSONTEST_FIXTURE(CharReaderAllowSpecialFloatsTest, issue209) {
   }
 
   {
-    char const doc[] = "{\"posInf\": Infinity, \"NegInf\": -Infinity}";
+    char const doc[] = "{\"posInf\": +Infinity, \"NegInf\": -Infinity}";
     bool ok = reader->parse(doc, doc + std::strlen(doc), &root, &errs);
     JSONTEST_ASSERT(ok);
     JSONTEST_ASSERT_STRING_EQUAL("", errs);
@@ -2521,8 +3076,7 @@ JSONTEST_FIXTURE(IteratorTest, indexes) {
 JSONTEST_FIXTURE(IteratorTest, const) {
   Json::Value const v;
   JSONTEST_ASSERT_THROWS(
-      Json::Value::iterator it(v.begin()) // Compile, but throw.
-      );
+      Json::Value::iterator it(v.begin())); // Compile, but throw.
 
   Json::Value value;
 
@@ -2600,8 +3154,29 @@ int main(int argc, const char* argv[]) {
   JSONTEST_REGISTER_FIXTURE(runner, ValueTest, specialFloats);
   JSONTEST_REGISTER_FIXTURE(runner, ValueTest, precision);
 
-  JSONTEST_REGISTER_FIXTURE(runner, WriterTest, dropNullPlaceholders);
+  JSONTEST_REGISTER_FIXTURE(runner, FastWriterTest, dropNullPlaceholders);
+  JSONTEST_REGISTER_FIXTURE(runner, FastWriterTest, enableYAMLCompatibility);
+  JSONTEST_REGISTER_FIXTURE(runner, FastWriterTest, omitEndingLineFeed);
+  JSONTEST_REGISTER_FIXTURE(runner, FastWriterTest, writeNumericValue);
+  JSONTEST_REGISTER_FIXTURE(runner, FastWriterTest, writeArrays);
+  JSONTEST_REGISTER_FIXTURE(runner, FastWriterTest, writeNestedObjects);
+  JSONTEST_REGISTER_FIXTURE(runner, StyledWriterTest, writeNumericValue);
+  JSONTEST_REGISTER_FIXTURE(runner, StyledWriterTest, writeArrays);
+  JSONTEST_REGISTER_FIXTURE(runner, StyledWriterTest, writeNestedObjects);
+  JSONTEST_REGISTER_FIXTURE(runner, StyledWriterTest, multiLineArray);
+  JSONTEST_REGISTER_FIXTURE(runner, StyledWriterTest, writeValueWithComment);
+  JSONTEST_REGISTER_FIXTURE(runner, StyledStreamWriterTest, writeNumericValue);
+  JSONTEST_REGISTER_FIXTURE(runner, StyledStreamWriterTest, writeArrays);
+  JSONTEST_REGISTER_FIXTURE(runner, StyledStreamWriterTest, writeNestedObjects);
+  JSONTEST_REGISTER_FIXTURE(runner, StyledStreamWriterTest, multiLineArray);
+  JSONTEST_REGISTER_FIXTURE(runner, StyledStreamWriterTest, writeValueWithComment);
+  JSONTEST_REGISTER_FIXTURE(runner, StreamWriterTest, writeNumericValue);
+  JSONTEST_REGISTER_FIXTURE(runner, StreamWriterTest, writeArrays);
+  JSONTEST_REGISTER_FIXTURE(runner, StreamWriterTest, writeNestedObjects);
+  JSONTEST_REGISTER_FIXTURE(runner, StreamWriterTest, multiLineArray);
   JSONTEST_REGISTER_FIXTURE(runner, StreamWriterTest, dropNullPlaceholders);
+  JSONTEST_REGISTER_FIXTURE(runner, StreamWriterTest, enableYAMLCompatibility);
+  JSONTEST_REGISTER_FIXTURE(runner, StreamWriterTest, indentation);
   JSONTEST_REGISTER_FIXTURE(runner, StreamWriterTest, writeZeroes);
 
   JSONTEST_REGISTER_FIXTURE(runner, ReaderTest, parseWithNoErrors);

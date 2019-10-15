@@ -7,7 +7,7 @@
 #define CPPTL_JSON_READER_H_INCLUDED
 
 #if !defined(JSON_IS_AMALGAMATION)
-#include "features.h"
+#include "json_features.h"
 #include "value.h"
 #endif // if !defined(JSON_IS_AMALGAMATION)
 #include <deque>
@@ -25,10 +25,6 @@
 
 #pragma pack(push, 8)
 
-#if defined(_MSC_VER)
-#pragma warning(disable : 4996)
-#endif
-
 namespace Json {
 
 /** \brief Unserialize a <a HREF="http://www.json.org">JSON</a> document into a
@@ -36,7 +32,9 @@ namespace Json {
  *
  * \deprecated Use CharReader and CharReaderBuilder.
  */
-class [[deprecated("deprecated Use CharReader and CharReaderBuilder.")]] JSON_API Reader {
+
+class JSONCPP_DEPRECATED(
+    "Use CharReader and CharReaderBuilder instead.") JSON_API Reader {
 public:
   typedef char Char;
   typedef const Char* Location;
@@ -54,10 +52,12 @@ public:
 
   /** \brief Constructs a Reader allowing all features for parsing.
    */
+  JSONCPP_DEPRECATED("Use CharReader and CharReaderBuilder instead")
   Reader();
 
   /** \brief Constructs a Reader allowing the specified feature set for parsing.
    */
+  JSONCPP_DEPRECATED("Use CharReader and CharReaderBuilder instead")
   Reader(const Features& features);
 
   /** \brief Read a Value from a <a HREF="http://www.json.org">JSON</a>
@@ -74,8 +74,8 @@ public:
    * \return \c true if the document was successfully parsed, \c false if an
    * error occurred.
    */
-  bool
-  parse(const std::string& document, Value& root, bool collectComments = true);
+  bool parse(const std::string& document, Value& root,
+             bool collectComments = true);
 
   /** \brief Read a Value from a <a HREF="http://www.json.org">JSON</a>
    * document.
@@ -93,9 +93,7 @@ public:
    * \return \c true if the document was successfully parsed, \c false if an
    * error occurred.
    */
-  bool parse(const char* beginDoc,
-             const char* endDoc,
-             Value& root,
+  bool parse(const char* beginDoc, const char* endDoc, Value& root,
              bool collectComments = true);
 
   /// \brief Parse from input stream.
@@ -110,7 +108,7 @@ public:
    * occurred during parsing.
    * \deprecated Use getFormattedErrorMessages() instead (typo fix).
    */
-  [[deprecated("Use getFormattedErrorMessages() instead.")]]
+  JSONCPP_DEPRECATED("Use getFormattedErrorMessages() instead.")
   String getFormatedErrorMessages() const;
 
   /** \brief Returns a user friendly string that list errors in the parsed
@@ -122,7 +120,7 @@ public:
    */
   String getFormattedErrorMessages() const;
 
-  /** \brief Returns a vector of structured erros encounted while parsing.
+  /** \brief Returns a vector of structured errors encountered while parsing.
    *
    * \return A (possibly empty) vector of StructuredError objects. Currently
    * only one error can be returned, but the caller should tolerate multiple
@@ -193,7 +191,7 @@ private:
 
   bool readToken(Token& token);
   void skipSpaces();
-  bool match(Location pattern, int patternLength);
+  bool match(const Char* pattern, int patternLength);
   bool readComment();
   bool readCStyleComment();
   bool readCppStyleComment();
@@ -208,24 +206,19 @@ private:
   bool decodeString(Token& token, String& decoded);
   bool decodeDouble(Token& token);
   bool decodeDouble(Token& token, Value& decoded);
-  bool decodeUnicodeCodePoint(Token& token,
-                              Location& current,
-                              Location end,
+  bool decodeUnicodeCodePoint(Token& token, Location& current, Location end,
                               unsigned int& unicode);
-  bool decodeUnicodeEscapeSequence(Token& token,
-                                   Location& current,
-                                   Location end,
-                                   unsigned int& unicode);
+  bool decodeUnicodeEscapeSequence(Token& token, Location& current,
+                                   Location end, unsigned int& unicode);
   bool addError(const String& message, Token& token, Location extra = nullptr);
   bool recoverFromError(TokenType skipUntilToken);
-  bool addErrorAndRecover(const String& message,
-                          Token& token,
+  bool addErrorAndRecover(const String& message, Token& token,
                           TokenType skipUntilToken);
   void skipUntilSpace();
   Value& currentValue();
   Char getNextChar();
-  void
-  getLocationLineAndColumn(Location location, int& line, int& column) const;
+  void getLocationLineAndColumn(Location location, int& line,
+                                int& column) const;
   String getLocationLineAndColumn(Location location) const;
   void addComment(Location begin, Location end, CommentPlacement placement);
   void skipCommentTokens(Token& token);
@@ -268,9 +261,7 @@ public:
    * \return \c true if the document was successfully parsed, \c false if an
    * error occurred.
    */
-  virtual bool parse(char const* beginDoc,
-                     char const* endDoc,
-                     Value* root,
+  virtual bool parse(char const* beginDoc, char const* endDoc, Value* root,
                      String* errs) = 0;
 
   class JSON_API Factory {
@@ -370,9 +361,7 @@ public:
  * Someday we might have a real StreamReader, but for now this
  * is convenient.
  */
-bool JSON_API parseFromStream(CharReader::Factory const&,
-                              IStream&,
-                              Value* root,
+bool JSON_API parseFromStream(CharReader::Factory const&, IStream&, Value* root,
                               String* errs);
 
 /** \brief Read from 'sin' into 'root'.

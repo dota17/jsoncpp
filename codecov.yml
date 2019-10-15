@@ -1,0 +1,22 @@
+coverage:
+  bot: codecov-bot
+
+  precision: 2
+  round: nearest
+  range: "75...90"
+
+  ignore:
+  - devtool/.*
+  - doc/.*
+  - example/.*
+  - pkg-config/.*
+
+  status:
+    project: no
+    patch: no
+    changes: no
+
+comment:
+  layout: reach, header, changes, diff
+  behavior: default
+
