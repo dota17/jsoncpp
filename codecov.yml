@@ -1,11 +1,16 @@
+codecov:
+  require_ci_to_pass: yes
+  bot: codecov-bot
+
 comment:
   layout: header, changes, diff
+  behavior: default
+  require_changes: yes
   
 coverage:
   precision: 2
   round: nearest
   range: "75...90"
-  bot: codecov-bot
   ignore:
   - devtool/.*
   - doc/.*
@@ -13,6 +18,15 @@ coverage:
   - pkg-config/.*
 
   status:
-    project: no
-    patch: no
+    project: yes
+    patch: yes
     changes: no
+
+parsers:
+  gcov:
+    branch_detection:
+      conditional: yes
+      loop: yes
+      method: no
+      macro: no
+
