@@ -4,7 +4,7 @@ comment:
 coverage:
   precision: 2
   round: nearest
-  range: "75...95"
+  range: "75...90"
   bot: codecov-bot
   ignore:
   - devtool/.*
@@ -13,16 +13,9 @@ coverage:
   - pkg-config/.*
 
   status:
-    project:
-      default:
-        target: auto
-        if_no_uploads: error
-
-    patch:
-      default:
-        if_no_uploads: error
-
-    changes: true
+    project: no
+    patch: no
+    changes: no
 
   parsers:
     gcov:
