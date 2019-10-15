@@ -1,10 +1,11 @@
+comment:
+  layout: header, changes, diff
+  
 coverage:
-  bot: codecov-bot
-
   precision: 2
   round: nearest
-  range: "75...90"
-
+  range: "75...95"
+  bot: codecov-bot
   ignore:
   - devtool/.*
   - doc/.*
@@ -12,11 +13,21 @@ coverage:
   - pkg-config/.*
 
   status:
-    project: no
-    patch: no
-    changes: no
+    project:
+      default:
+        target: auto
+        if_no_uploads: error
 
-comment:
-  layout: reach, header, changes, diff
-  behavior: default
+    patch:
+      default:
+        if_no_uploads: error
 
+    changes: true
+
+  parsers:
+    gcov:
+      branch_detection:
+        macro: no
+        loop: no
+        conditional: no
+        method: no
