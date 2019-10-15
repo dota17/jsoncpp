@@ -16,11 +16,3 @@ coverage:
     project: no
     patch: no
     changes: no
-
-  parsers:
-    gcov:
-      branch_detection:
-        macro: no
-        loop: no
-        conditional: no
-        method: no
