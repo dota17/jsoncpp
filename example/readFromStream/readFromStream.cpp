@@ -20,6 +20,7 @@ int main(int argc, char* argv[]) {
 
   Json::CharReaderBuilder builder;
   builder["collectComments"] = true;
+  builder["allowComments"] = false;
   JSONCPP_STRING errs;
   if (!parseFromStream(builder, ifs, &root, &errs)) {
     std::cout << errs << std::endl;
