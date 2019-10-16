@@ -135,7 +135,9 @@ public:
    * \param message The error message.
    * \return \c true if the error was successfully added, \c false if the Value
    * offset exceeds the document size.
+   * \deprecated Not suggest for use.
    */
+  JSONCPP_DEPRECATED("Not suggest for use.")
   bool pushError(const Value& value, const String& message);
 
   /** \brief Add a semantic error message with extra context.
@@ -145,7 +147,9 @@ public:
    * \param extra   Additional JSON Value location to contextualize the error
    * \return \c true if the error was successfully added, \c false if either
    * Value offset exceeds the document size.
+   * \deprecated Not suggest for use.
    */
+  JSONCPP_DEPRECATED("Not suggest for use.")
   bool pushError(const Value& value, const String& message, const Value& extra);
 
   /** \brief Return whether there are any errors.
