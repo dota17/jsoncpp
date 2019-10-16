@@ -1769,7 +1769,7 @@ JSONTEST_FIXTURE_LOCAL(ValueTest, StaticString) {
 
 JSONTEST_FIXTURE_LOCAL(ValueTest, WideString) {
   // https://github.com/open-source-parsers/jsoncpp/issues/756
-  const std::string uni = u8"式，进"; // "\u5f0f\uff0c\u8fdb"
+  const std::string uni = u8"式，进, ¾, 鴎"; // "\u5f0f\uff0c\u8fdb"
   std::string styled;
   {
     Json::Value v;
