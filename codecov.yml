@@ -1,5 +1,5 @@
 comment:
-  layout: header, header, diff
+  layout: "diff"
   
 coverage:
   precision: 2
