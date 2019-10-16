@@ -3,7 +3,7 @@ codecov:
   bot: codecov-bot
 
 comment:
-  layout: header, changes, diff
+  layout: header, diff
   behavior: default
   require_changes: yes
   
