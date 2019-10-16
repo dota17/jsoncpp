@@ -2034,48 +2034,7 @@ JSONTEST_FIXTURE_LOCAL(FastWriterTest, writeArrays) {
   JSONTEST_ASSERT_STRING_EQUAL(expected, result);
 }
 
-JSONTEST_FIXTURE_LOCAL(FastWriterTest, writeNestedObjects) {
-  Json::FastWriter writer;
-  const Json::String expected("{"
-                              "\"object1\":{"
-                              "\"bool\":true,"
-                              "\"nested\":123"
-                              "},"
-                              "\"object2\":{}"
-                              "}\n");
-  Json::Value root, child;
-  child["nested"] = 123;
-  child["bool"] = true;
-  root["object1"] = child;
-  root["object2"] = Json::objectValue;
-
-  const Json::String result = writer.write(root);
-  JSONTEST_ASSERT_STRING_EQUAL(expected, result);
-}
-
 struct StyledWriterTest : JsonTest::TestCase {};
-
-JSONTEST_FIXTURE_LOCAL(StyledWriterTest, writeNumericValue) {
-  Json::StyledWriter writer;
-  const Json::String expected("{\n"
-                              "   \"emptyValue\" : null,\n"
-                              "   \"false\" : false,\n"
-                              "   \"null\" : \"null\",\n"
-                              "   \"number\" : -6200000000000000.0,\n"
-                              "   \"real\" : 1.256,\n"
-                              "   \"uintValue\" : 17\n"
-                              "}\n");
-  Json::Value root;
-  root["emptyValue"] = Json::nullValue;
-  root["false"] = false;
-  root["null"] = "null";
-  root["number"] = -6.2e+15;
-  root["real"] = 1.256;
-  root["uintValue"] = Json::Value(17U);
-
-  const Json::String result = writer.write(root);
-  JSONTEST_ASSERT_STRING_EQUAL(expected, result);
-}
 
 JSONTEST_FIXTURE_LOCAL(StyledWriterTest, writeArrays) {
   Json::StyledWriter writer;
