@@ -1725,48 +1725,6 @@ JSONTEST_FIXTURE_LOCAL(ValueTest, typeChecksThrowExceptions) {
 #endif
 }
 
-JSONTEST_FIXTURE_LOCAL(ValueTest, offsetAccessors) {
-  Json::Value x;
-  JSONTEST_ASSERT(x.getOffsetStart() == 0);
-  JSONTEST_ASSERT(x.getOffsetLimit() == 0);
-  x.setOffsetStart(10);
-  x.setOffsetLimit(20);
-  JSONTEST_ASSERT(x.getOffsetStart() == 10);
-  JSONTEST_ASSERT(x.getOffsetLimit() == 20);
-  Json::Value y(x);
-  JSONTEST_ASSERT(y.getOffsetStart() == 10);
-  JSONTEST_ASSERT(y.getOffsetLimit() == 20);
-  Json::Value z;
-  z.swap(y);
-  JSONTEST_ASSERT(z.getOffsetStart() == 10);
-  JSONTEST_ASSERT(z.getOffsetLimit() == 20);
-  JSONTEST_ASSERT(y.getOffsetStart() == 0);
-  JSONTEST_ASSERT(y.getOffsetLimit() == 0);
-}
-
-JSONTEST_FIXTURE_LOCAL(ValueTest, StaticString) {
-  char mutant[] = "hello";
-  Json::StaticString ss(mutant);
-  Json::String regular(mutant);
-  mutant[1] = 'a';
-  JSONTEST_ASSERT_STRING_EQUAL("hallo", ss.c_str());
-  JSONTEST_ASSERT_STRING_EQUAL("hello", regular.c_str());
-  {
-    Json::Value root;
-    root["top"] = ss;
-    JSONTEST_ASSERT_STRING_EQUAL("hallo", root["top"].asString());
-    mutant[1] = 'u';
-    JSONTEST_ASSERT_STRING_EQUAL("hullo", root["top"].asString());
-  }
-  {
-    Json::Value root;
-    root["top"] = regular;
-    JSONTEST_ASSERT_STRING_EQUAL("hello", root["top"].asString());
-    mutant[1] = 'u';
-    JSONTEST_ASSERT_STRING_EQUAL("hello", root["top"].asString());
-  }
-}
-
 JSONTEST_FIXTURE_LOCAL(ValueTest, WideString) {
   // https://github.com/open-source-parsers/jsoncpp/issues/756
   const std::string uni = u8"式，进"; // "\u5f0f\uff0c\u8fdb"
