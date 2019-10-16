@@ -1,31 +1,30 @@
-codecov:
-  require_ci_to_pass: yes
-  bot: codecov-bot
-
 comment:
-  layout: header, diff
-  behavior: default
-  require_changes: yes
+  layout: header, header, diff
   
 coverage:
   precision: 2
   round: nearest
-  range: "75...90"
+
   ignore:
+  - example/.*
   - devtool/.*
   - doc/.*
-  - example/.*
   - pkg-config/.*
 
   status:
-    project: yes
-    patch: yes
-    changes: no
+    project:
+      default:
+        target: auto
+        if_no_uploads: error
+    
+    patch:
+      default:
+        if_no_uploads: error
 
 parsers:
   gcov:
     branch_detection:
-      conditional: yes
+      conditional: no
       loop: yes
       method: no
       macro: no
