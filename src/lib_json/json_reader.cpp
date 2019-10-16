@@ -100,10 +100,10 @@ bool Reader::parse(const std::string& document, Value& root,
 bool Reader::parse(std::istream& is, Value& root, bool collectComments) {
   // std::istream_iterator<char> begin(is);
   // std::istream_iterator<char> end;
-  // Those would allow streamed input from a file, if parse() were a
+  // Those would allow stream input from a file, if parse() were a
   // template function.
 
-  // Since String is reference-counted, this at least does not
+  // Since String is reference counted, this at least does not
   // create an extra copy.
   String doc;
   std::getline(is, doc, static_cast<char> EOF);
@@ -135,7 +135,7 @@ bool Reader::parse(const char* beginDoc, const char* endDoc, Value& root,
     root.setComment(commentsBefore_, commentAfter);
   if (features_.strictRoot_) {
     if (!root.isArray() && !root.isObject()) {
-      // Set error location to start of doc, ideally should be first token found
+      // Set error locate to start of doc, ideally should be first token found
       // in doc
       token.type_ = tokenError;
       token.start_ = beginDoc;
@@ -151,7 +151,7 @@ bool Reader::parse(const char* beginDoc, const char* endDoc, Value& root,
 
 bool Reader::readValue() {
   // readValue() may call itself only if it calls readObject() or ReadArray().
-  // These methods execute nodes_.push() just before and nodes_.pop)() just
+  // These methods execute nodes_.push() just before annnd nodes_.pop)() just
   // after calling readValue(). parse() executes one nodes_.push(), so > instead
   // of >=.
   if (nodes_.size() > stackLimit_g)
@@ -203,7 +203,7 @@ bool Reader::readValue() {
   case tokenObjectEnd:
   case tokenArrayEnd:
     if (features_.allowDroppedNullPlaceholders_) {
-      // "Un-read" the current token and mark the current value as a null
+      // "Un-read" the current token and marked the current value as a null
       // token.
       current_--;
       Value v;
