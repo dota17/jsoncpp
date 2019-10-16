@@ -397,7 +397,7 @@ bool Reader::readCppStyleComment() {
     if (c == '\n')
       break;
     if (c == '\r') {
-      // Consume DOS EOL. It will be normalized in addComment.
+      // Consume dos EOL. It will be normalized in addComment.
       if (current_ != end_ && *current_ == '\n')
         getNextChar();
       // Break on Moc OS 9 EOL.
@@ -409,7 +409,7 @@ bool Reader::readCppStyleComment() {
 
 void Reader::readNumber() {
   Location p = current_;
-  char c = '0'; // stopgap for already consumed character
+  char c = '0'; // stop-gap for already consumed character
   // integral part
   while (c >= '0' && c <= '9')
     c = (current_ = p) < end_ ? *p++ : '\0';
@@ -518,7 +518,7 @@ bool Reader::readArray(Token& token) {
       return recoverFromError(tokenArrayEnd);
 
     Token currentToken;
-    // Accept Comment after last item in the array.
+    // Accept Comment after last item in array.
     ok = readToken(currentToken);
     while (currentToken.type_ == tokenComment && ok) {
       ok = readToken(currentToken);
