@@ -1997,42 +1997,6 @@ JSONTEST_FIXTURE_LOCAL(FastWriterTest, omitEndingLineFeed) {
   JSONTEST_ASSERT(writer.write(nullValue) == "null");
 }
 
-JSONTEST_FIXTURE_LOCAL(FastWriterTest, writeNumericValue) {
-  Json::FastWriter writer;
-  const Json::String expected("{"
-                              "\"emptyValue\":null,"
-                              "\"false\":false,"
-                              "\"null\":\"null\","
-                              "\"number\":-6200000000000000.0,"
-                              "\"real\":1.256,"
-                              "\"uintValue\":17"
-                              "}\n");
-  Json::Value root;
-  root["emptyValue"] = Json::nullValue;
-  root["false"] = false;
-  root["null"] = "null";
-  root["number"] = -6.2e+15;
-  root["real"] = 1.256;
-  root["uintValue"] = Json::Value(17U);
-
-  const Json::String result = writer.write(root);
-  JSONTEST_ASSERT_STRING_EQUAL(expected, result);
-}
-
-JSONTEST_FIXTURE_LOCAL(FastWriterTest, writeArrays) {
-  Json::FastWriter writer;
-  const Json::String expected("{"
-                              "\"property1\":[\"value1\",\"value2\"],"
-                              "\"property2\":[]"
-                              "}\n");
-  Json::Value root;
-  root["property1"][0] = "value1";
-  root["property1"][1] = "value2";
-  root["property2"] = Json::arrayValue;
-
-  const Json::String result = writer.write(root);
-  JSONTEST_ASSERT_STRING_EQUAL(expected, result);
-}
 
 JSONTEST_FIXTURE_LOCAL(FastWriterTest, writeNestedObjects) {
   Json::FastWriter writer;
