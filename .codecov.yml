@@ -6,22 +6,52 @@ comment:
   require_changes: true  # Only post comment if coverage change
   behavior: default      # Update, if exists. Otherwise post new
   branches: master
-  
+
 coverage:
   range: 75...90        
   precision: 2
   round: down
 
   status:
-    project: yes
-    patch: yes
-    changes: no
-    
+    project:
+      default: false
+#      default:
+#        # basic
+#        target: auto
+#        threshold: null
+#        base: auto 
+#        # advanced
+#        branches: null
+#        if_no_uploads: error
+#        if_not_found: success
+#        if_ci_failed: error
+#        only_pulls: false
+#        flags: null
+#        paths: null
+    patch:
+      default: false
+#      default:
+#        # basic
+#        target: auto
+#        threshold: null
+#        base: auto 
+#        # advanced
+#        branches: null
+#        if_no_uploads: error
+#        if_not_found: success
+#        if_ci_failed: error
+#        only_pulls: false
+#        flags: null
+#        paths: null
+
 ignore:
-  - example/.*
-  - devtool/.*
+  - devtools/.*
   - doc/.*
+  - example/.*
   - pkg-config/.*
+  - src/jsonctestrunner/.*
+  - src/test_lib_json/.*
+  - test/.*
 
 parsers:
   gcov:
