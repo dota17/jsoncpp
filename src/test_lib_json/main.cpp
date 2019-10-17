@@ -140,36 +140,6 @@ Json::String ValueTest::normalizeFloatingPointStr(const Json::String& s) {
   return s;
 }
 
-JSONTEST_FIXTURE_LOCAL(ValueTest, checkNormalizeFloatingPointStr) {
-  JSONTEST_ASSERT_STRING_EQUAL("0.0", normalizeFloatingPointStr("0.0"));
-  JSONTEST_ASSERT_STRING_EQUAL("0e0", normalizeFloatingPointStr("0e0"));
-  JSONTEST_ASSERT_STRING_EQUAL("1234.0", normalizeFloatingPointStr("1234.0"));
-  JSONTEST_ASSERT_STRING_EQUAL("1234.0e0",
-                               normalizeFloatingPointStr("1234.0e0"));
-  JSONTEST_ASSERT_STRING_EQUAL("1234.0e-1",
-                               normalizeFloatingPointStr("1234.0e-1"));
-  JSONTEST_ASSERT_STRING_EQUAL("1234.0e+0",
-                               normalizeFloatingPointStr("1234.0e+0"));
-  JSONTEST_ASSERT_STRING_EQUAL("1234.0e+1",
-                               normalizeFloatingPointStr("1234.0e+001"));
-  JSONTEST_ASSERT_STRING_EQUAL("1234e-1", normalizeFloatingPointStr("1234e-1"));
-  JSONTEST_ASSERT_STRING_EQUAL("1234e+0",
-                               normalizeFloatingPointStr("1234e+000"));
-  JSONTEST_ASSERT_STRING_EQUAL("1234e+1",
-                               normalizeFloatingPointStr("1234e+001"));
-  JSONTEST_ASSERT_STRING_EQUAL("1234e10", normalizeFloatingPointStr("1234e10"));
-  JSONTEST_ASSERT_STRING_EQUAL("1234e10",
-                               normalizeFloatingPointStr("1234e010"));
-  JSONTEST_ASSERT_STRING_EQUAL("1234e+10",
-                               normalizeFloatingPointStr("1234e+010"));
-  JSONTEST_ASSERT_STRING_EQUAL("1234e-10",
-                               normalizeFloatingPointStr("1234e-010"));
-  JSONTEST_ASSERT_STRING_EQUAL("1234e+100",
-                               normalizeFloatingPointStr("1234e+100"));
-  JSONTEST_ASSERT_STRING_EQUAL("1234e-100",
-                               normalizeFloatingPointStr("1234e-100"));
-}
-
 JSONTEST_FIXTURE_LOCAL(ValueTest, memberCount) {
   JSONTEST_ASSERT_PRED(checkMemberCount(emptyArray_, 0));
   JSONTEST_ASSERT_PRED(checkMemberCount(emptyObject_, 0));
