@@ -17,7 +17,7 @@ coverage:
     - doc/.*
     - example/.*
     - pkg-config/.*
-    - src/jsonctestrunner/.*
+    - src/jsontestrunner/.*
     - src/test_lib_json/.*
     - test/.*
 
@@ -54,6 +54,7 @@ coverage:
         paths:
         - include
         - src/lib_json/
+    changes: true
 
 parsers:
   gcov:
