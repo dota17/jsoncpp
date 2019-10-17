@@ -2,7 +2,7 @@ codecov:
   require_ci_to_pass: yes
 
 comment:
-  layout: "diff, files"           # Only show coverage diff
+  layout: diff, files           # Only show coverage diff
   require_changes: true  # Only post comment if coverage change
   behavior: default      # Update, if exists. Otherwise post new
   branches: master
@@ -11,6 +11,15 @@ coverage:
   range: 75...90        
   precision: 2
   round: down
+
+  ignore:
+    - devtools/.*
+    - doc/.*
+    - example/.*
+    - pkg-config/.*
+    - src/jsonctestrunner/.*
+    - src/test_lib_json/.*
+    - test/.*
 
   status:
     project:
@@ -45,15 +54,6 @@ coverage:
         paths:
         - include
         - src/lib_json/
-
-ignore:
-  - devtools/.*
-  - doc/.*
-  - example/.*
-  - pkg-config/.*
-  - src/jsonctestrunner/.*
-  - src/test_lib_json/.*
-  - test/.*
 
 parsers:
   gcov:
