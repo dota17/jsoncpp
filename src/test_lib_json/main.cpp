@@ -1789,8 +1789,6 @@ JSONTEST_FIXTURE_LOCAL(ValueTest, WideString) {
   JSONTEST_ASSERT_STRING_EQUAL(root["abc"].asString(), uni);
 }
 
-
-
 JSONTEST_FIXTURE_LOCAL(ValueTest, zeroes) {
   char const cstr[] = "h\0i";
   Json::String binary(cstr, sizeof(cstr)); // include trailing 0
