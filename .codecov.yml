@@ -54,7 +54,6 @@ coverage:
         paths:
         - include
         - src/lib_json/
-    changes: true
 
 parsers:
   gcov:
