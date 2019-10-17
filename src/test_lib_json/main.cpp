@@ -1789,49 +1789,7 @@ JSONTEST_FIXTURE_LOCAL(ValueTest, WideString) {
   JSONTEST_ASSERT_STRING_EQUAL(root["abc"].asString(), uni);
 }
 
-JSONTEST_FIXTURE_LOCAL(ValueTest, CommentBefore) {
-  Json::Value val; // fill val
-  val.setComment(Json::String("// this comment should appear before"),
-                 Json::commentBefore);
-  Json::StreamWriterBuilder wbuilder;
-  wbuilder.settings_["commentStyle"] = "All";
-  {
-    char const expected[] = "// this comment should appear before\nnull";
-    Json::String result = Json::writeString(wbuilder, val);
-    JSONTEST_ASSERT_STRING_EQUAL(expected, result);
-    Json::String res2 = val.toStyledString();
-    Json::String exp2 = "\n";
-    exp2 += expected;
-    exp2 += "\n";
-    JSONTEST_ASSERT_STRING_EQUAL(exp2, res2);
-  }
-  Json::Value other = "hello";
-  val.swapPayload(other);
-  {
-    char const expected[] = "// this comment should appear before\n\"hello\"";
-    Json::String result = Json::writeString(wbuilder, val);
-    JSONTEST_ASSERT_STRING_EQUAL(expected, result);
-    Json::String res2 = val.toStyledString();
-    Json::String exp2 = "\n";
-    exp2 += expected;
-    exp2 += "\n";
-    JSONTEST_ASSERT_STRING_EQUAL(exp2, res2);
-    JSONTEST_ASSERT_STRING_EQUAL("null\n", other.toStyledString());
-  }
-  val = "hello";
-  // val.setComment("// this comment should appear before",
-  // Json::CommentPlacement::commentBefore); Assignment over-writes comments.
-  {
-    char const expected[] = "\"hello\"";
-    Json::String result = Json::writeString(wbuilder, val);
-    JSONTEST_ASSERT_STRING_EQUAL(expected, result);
-    Json::String res2 = val.toStyledString();
-    Json::String exp2 = "";
-    exp2 += expected;
-    exp2 += "\n";
-    JSONTEST_ASSERT_STRING_EQUAL(exp2, res2);
-  }
-}
+
 
 JSONTEST_FIXTURE_LOCAL(ValueTest, zeroes) {
   char const cstr[] = "h\0i";
