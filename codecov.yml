@@ -1,9 +1,13 @@
 comment:
-  layout: "diff"
+  layout: diff           # Only show coverage diff
+  require_changes: true  # Only post comment if coverage change
+  behavior: default      # Update, if exists. Otherwise post new
+  
   
 coverage:
+  range: 75...90        
   precision: 2
-  round: nearest
+  round: down
 
   ignore:
   - example/.*
@@ -19,6 +23,7 @@ coverage:
     
     patch:
       default:
+        target: auto
         if_no_uploads: error
 
 parsers:
