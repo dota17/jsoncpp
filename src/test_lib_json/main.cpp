@@ -1767,32 +1767,6 @@ JSONTEST_FIXTURE_LOCAL(ValueTest, StaticString) {
   }
 }
 
-JSONTEST_FIXTURE_LOCAL(ValueTest, zeroes) {
-  char const cstr[] = "h\0i";
-  Json::String binary(cstr, sizeof(cstr)); // include trailing 0
-  JSONTEST_ASSERT_EQUAL(4U, binary.length());
-  Json::StreamWriterBuilder b;
-  {
-    Json::Value root;
-    root = binary;
-    JSONTEST_ASSERT_STRING_EQUAL(binary, root.asString());
-  }
-  {
-    char const top[] = "top";
-    Json::Value root;
-    root[top] = binary;
-    JSONTEST_ASSERT_STRING_EQUAL(binary, root[top].asString());
-    Json::Value removed;
-    bool did;
-    did = root.removeMember(top, top + sizeof(top) - 1U, &removed);
-    JSONTEST_ASSERT(did);
-    JSONTEST_ASSERT_STRING_EQUAL(binary, removed.asString());
-    did = root.removeMember(top, top + sizeof(top) - 1U, &removed);
-    JSONTEST_ASSERT(!did);
-    JSONTEST_ASSERT_STRING_EQUAL(binary, removed.asString()); // still
-  }
-}
-
 JSONTEST_FIXTURE_LOCAL(ValueTest, zeroesInKeys) {
   char const cstr[] = "h\0i";
   Json::String binary(cstr, sizeof(cstr)); // include trailing 0
