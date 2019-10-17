@@ -1,36 +1,33 @@
+codecov:
+  require_ci_to_pass: yes
+
 comment:
-  layout: diff           # Only show coverage diff
+  layout: "diff, files"           # Only show coverage diff
   require_changes: true  # Only post comment if coverage change
   behavior: default      # Update, if exists. Otherwise post new
-  
+  branches: master
   
 coverage:
   range: 75...90        
   precision: 2
   round: down
 
-  ignore:
+  status:
+    project: yes
+    patch: yes
+    changes: no
+    
+ignore:
   - example/.*
   - devtool/.*
   - doc/.*
   - pkg-config/.*
 
-  status:
-    project:
-      default:
-        target: auto
-        if_no_uploads: error
-    
-    patch:
-      default:
-        target: auto
-        if_no_uploads: error
-
 parsers:
   gcov:
     branch_detection:
-      conditional: no
-      loop: no
+      conditional: yes
+      loop: yes
       method: no
       macro: no
 
