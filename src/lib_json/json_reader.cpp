@@ -1875,7 +1875,6 @@ bool OurReader::pushError(const Value& value, const String& message,
   return true;
 }
 
-bool OurReader::good() const { return errors_.empty(); }
 
 class OurCharReader : public CharReader {
   bool const collectComments_;
