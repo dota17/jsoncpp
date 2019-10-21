@@ -1767,27 +1767,6 @@ JSONTEST_FIXTURE_LOCAL(ValueTest, StaticString) {
   }
 }
 
-JSONTEST_FIXTURE_LOCAL(ValueTest, WideString) {
-  // https://github.com/open-source-parsers/jsoncpp/issues/756
-  const std::string uni = u8"式，进"; // "\u5f0f\uff0c\u8fdb"
-  std::string styled;
-  {
-    Json::Value v;
-    v["abc"] = uni;
-    styled = v.toStyledString();
-  }
-  Json::Value root;
-  {
-    JSONCPP_STRING errs;
-    std::istringstream iss(styled);
-    bool ok = parseFromStream(Json::CharReaderBuilder(), iss, &root, &errs);
-    JSONTEST_ASSERT(ok);
-    if (!ok) {
-      std::cerr << "errs: " << errs << std::endl;
-    }
-  }
-  JSONTEST_ASSERT_STRING_EQUAL(root["abc"].asString(), uni);
-}
 
 JSONTEST_FIXTURE_LOCAL(ValueTest, CommentBefore) {
   Json::Value val; // fill val
