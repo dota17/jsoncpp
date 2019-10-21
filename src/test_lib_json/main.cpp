@@ -1767,7 +1767,6 @@ JSONTEST_FIXTURE_LOCAL(ValueTest, StaticString) {
   }
 }
 
-
 JSONTEST_FIXTURE_LOCAL(ValueTest, CommentBefore) {
   Json::Value val; // fill val
   val.setComment(Json::String("// this comment should appear before"),
