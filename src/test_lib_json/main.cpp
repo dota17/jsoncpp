@@ -331,9 +331,9 @@ JSONTEST_FIXTURE_LOCAL(ValueTest, arrayInsertAtRandomIndex) {
   Json::Value array;
   const Json::Value str0("index2");
   const Json::Value str1("index3");
-  array.append("index0"); // append rvalue
+  array.append("index0");
   array.append("index1");
-  array.append(str0); // append lvalue
+  array.append(std::move(str0));
 
   std::vector<Json::Value*> vec; // storage value address for checking
   for (int i = 0; i < 3; i++) {
