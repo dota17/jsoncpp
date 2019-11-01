@@ -12,7 +12,6 @@
 #include <ostream>
 #include <sstream>
 #include <string>
-#include <type_traits>
 
 /// If defined, indicates that json library is embedded in CppTL library.
 //# define JSON_IN_CPPTL 1
