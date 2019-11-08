@@ -2834,8 +2834,8 @@ JSONTEST_FIXTURE_LOCAL(CharReaderTest, parseWithNoErrorsTestingOffsets) {
   Json::String errs;
   Json::Value root;
   char const doc[] = "{ \"property\" : [\"value\", \"value2\"], \"obj\" : "
-                     "{ \"nested\" : -6.2e+15, \"bool\" : true}, \"null\" : "
-                     "null, \"false\" : false }";
+                     "{ \"nested\" : -6.2e+15, \"num\" : +123, \"bool\" : "
+                     "true}, \"null\" : null, \"false\" : false }";
   bool ok = reader->parse(doc, doc + std::strlen(doc), &root, &errs);
   JSONTEST_ASSERT(ok);
   JSONTEST_ASSERT(errs.empty());
@@ -3047,6 +3047,40 @@ JSONTEST_FIXTURE_LOCAL(CharReaderFailIfExtraTest, commentAfterBool) {
   JSONTEST_ASSERT(ok);
   JSONTEST_ASSERT_STRING_EQUAL("", errs);
   JSONTEST_ASSERT_EQUAL(true, root.asBool());
+  delete reader;
+}
+
+JSONTEST_FIXTURE_LOCAL(CharReaderFailIfExtraTest, commenttset) {
+  Json::CharReaderBuilder b;
+  Json::Value root;
+  b.settings_["failIfExtra"] = true;
+  Json::CharReader* reader(b.newCharReader());
+  Json::String errs;
+  {
+    char const doc[] = " true //comment1\n//comment2\r//comment3\r\n";
+    bool ok = reader->parse(doc, doc + std::strlen(doc), &root, &errs);
+    JSONTEST_ASSERT(ok);
+    JSONTEST_ASSERT_STRING_EQUAL("", errs);
+    JSONTEST_ASSERT_EQUAL(true, root.asBool());
+  }
+  {
+    char const doc[] = " true //com\rment";
+    bool ok = reader->parse(doc, doc + std::strlen(doc), &root, &errs);
+    JSONTEST_ASSERT(!ok);
+    JSONTEST_ASSERT_STRING_EQUAL("* Line 2, Column 1\n"
+                                 "  Extra non-whitespace after JSON value.\n",
+                                 errs);
+    JSONTEST_ASSERT_EQUAL(true, root.asBool());
+  }
+  {
+    char const doc[] = " true //com\nment";
+    bool ok = reader->parse(doc, doc + std::strlen(doc), &root, &errs);
+    JSONTEST_ASSERT(!ok);
+    JSONTEST_ASSERT_STRING_EQUAL("* Line 2, Column 1\n"
+                                 "  Extra non-whitespace after JSON value.\n",
+                                 errs);
+    JSONTEST_ASSERT_EQUAL(true, root.asBool());
+  }
   delete reader;
 }
 struct CharReaderAllowDropNullTest : JsonTest::TestCase {};
