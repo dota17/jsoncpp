@@ -53,6 +53,9 @@ endif()
 if(NOT CMAKE_CXX_EXTENSIONS)
     set(CMAKE_CXX_EXTENSIONS OFF)
 endif()
+if(NOT CMAKE_DEBUG_POSFIX)
+    set(CMAKE_DEBUG_POSTFIX "-d")
+endif()
 
 # ====
 
