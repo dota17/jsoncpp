@@ -2815,7 +2815,7 @@ JSONTEST_FIXTURE_LOCAL(ReaderTest, strictModeParseNumber) {
 JSONTEST_FIXTURE_LOCAL(ReaderTest, parseChineseWithOneError) {
   // \u4f50\u85e4 佐藤
   checkParse(R"({ "pr)"
-             "佐藤"
+             "\u4f50\u85e4"
              R"(erty" :: "value" })",
              {{18, 19, "Syntax error: value, object or array expected."}},
              "* Line 1, Column 19\n  Syntax error: value, object or array "
