@@ -1964,6 +1964,11 @@ bool parseFromStream(CharReader::Factory const& fact, IStream& sin, Value* root,
   char const* begin = doc.data();
   char const* end = begin + doc.size();
   // Note that we do not actually need a null-terminator.
+  //  ignore BOM as suggested by RFC
+  if (strlen(begin) >= 3 && begin[0] == '\xEF' && begin[1] == '\xBB' &&
+      begin[2] == '\xBF') {
+    begin = begin + 3;
+  }
   CharReaderPtr const reader(fact.newCharReader());
   return reader->parse(begin, end, root, errs);
 }
