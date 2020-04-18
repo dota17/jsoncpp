@@ -70,24 +70,34 @@ extern JSON_API int msvc_pre1900_c99_snprintf(char* outBuf, size_t size,
 // Storages, and 64 bits integer support is disabled.
 // #define JSON_NO_INT64 1
 
-// JSONCPP_OVERRIDE is maintained for backwards compatibility of external tools.
-// C++11 should be used directly in JSONCPP.
+// These Macors are maintained for backwards compatibility
+#if (defined(_MSC_VER_) && _MSC_VER_ >= 1900) ||                               \
+    (defined(__GNUC__) && __cplusplus >= 201003L) ||                           \
+    (defined(__clang__) && __clang_major__ == 3 && __clang_minor__ > 3)
+#define JSONCPP_VER_11 1
+#define JSONCPP_NULL nullptr
+#define JSONCPP_CONST constexpr
+#define JSONCPP_CTOR_DEFAULT = default
+#define JSONCPP_CTOR_DELETE = delete
+#define JSONCPP_NOEXCEPT noexcept
+#define JSONCPP_OP_EXPLICIT explicit
 #define JSONCPP_OVERRIDE override
-
-#if __cplusplus >= 201103L
-#define JSONCPP_NOEXCEPT noexcept
-#define JSONCPP_OP_EXPLICIT explicit
-#elif defined(_MSC_VER) && _MSC_VER < 1900
-#define JSONCPP_NOEXCEPT throw()
-#define JSONCPP_OP_EXPLICIT explicit
-#elif defined(_MSC_VER) && _MSC_VER >= 1900
-#define JSONCPP_NOEXCEPT noexcept
-#define JSONCPP_OP_EXPLICIT explicit
+#define JSONCPP_MOVER(value) std::move(value)
 #else
+#define JSONCPP_VER_11 0
+#define JSONCPP_NULL NULL
+#define JSONCPP_CONST const
+#define JSONCPP_CTOR_DEFAULT
+#define JSONCPP_CTOR_DELETE
 #define JSONCPP_NOEXCEPT throw()
 #define JSONCPP_OP_EXPLICIT
+#define JSONCPP_OVERRIDE
+#define JSONCPP_MOVER(value) value
 #endif
 
+// Define deprecated attribute
+// [[deprecated]] is C++14 standard and in VS 2015 or later
+// for compatibility, [[deprecated]] is not used.
 #ifdef __clang__
 #if __has_extension(attribute_deprecated_with_message)
 #define JSONCPP_DEPRECATED(message) __attribute__((deprecated(message)))
