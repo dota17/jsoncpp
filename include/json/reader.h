@@ -36,8 +36,8 @@ namespace Json {
 class JSONCPP_DEPRECATED(
     "Use CharReader and CharReaderBuilder instead.") JSON_API Reader {
 public:
-  using Char = char;
-  using Location = const Char*;
+  typedef char Char;
+  typedef const Char* Location;
 
   /** \brief An error tagged with where in the JSON text it was encountered.
    *
@@ -210,7 +210,7 @@ private:
                               unsigned int& unicode);
   bool decodeUnicodeEscapeSequence(Token& token, Location& current,
                                    Location end, unsigned int& unicode);
-  bool addError(const String& message, Token& token, Location extra = nullptr);
+  bool addError(const String& message, Token& token, Location extra = JSONCPP_NULL);
   bool recoverFromError(TokenType skipUntilToken);
   bool addErrorAndRecover(const String& message, Token& token,
                           TokenType skipUntilToken);
@@ -230,21 +230,21 @@ private:
   Nodes nodes_;
   Errors errors_;
   String document_;
-  Location begin_{};
-  Location end_{};
-  Location current_{};
-  Location lastValueEnd_{};
-  Value* lastValue_{};
+  Location begin_;
+  Location end_;
+  Location current_;
+  Location lastValueEnd_;
+  Value* lastValue_;
   String commentsBefore_;
   Features features_;
-  bool collectComments_{};
+  bool collectComments_;
 }; // Reader
 
 /** Interface for reading JSON from a char array.
  */
 class JSON_API CharReader {
 public:
-  virtual ~CharReader() = default;
+  virtual ~CharReader() {};
   /** \brief Read a Value from a <a HREF="http://www.json.org">JSON</a>
    * document. The document must be a UTF-8 encoded string containing the
    * document to read.
@@ -266,7 +266,7 @@ public:
 
   class JSON_API Factory {
   public:
-    virtual ~Factory() = default;
+    virtual ~Factory() {};
     /** \brief Allocate a CharReader via operator new().
      * \throw std::exception if something goes wrong (e.g. invalid settings)
      */
@@ -332,9 +332,9 @@ public:
   Json::Value settings_;
 
   CharReaderBuilder();
-  ~CharReaderBuilder() override;
+  ~CharReaderBuilder() JSONCPP_OVERRIDE;
 
-  CharReader* newCharReader() const override;
+  CharReader* newCharReader() const JSONCPP_OVERRIDE;
 
   /** \return true if 'settings' are legal and consistent;
    *   otherwise, indicate bad settings via 'invalid'.

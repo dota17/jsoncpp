@@ -6,6 +6,8 @@
 #ifndef JSON_ALLOCATOR_H_INCLUDED
 #define JSON_ALLOCATOR_H_INCLUDED
 
+#if JSONCPP_VER_11
+
 #include <cstring>
 #include <memory>
 
@@ -85,5 +87,7 @@ bool operator!=(const SecureAllocator<T>&, const SecureAllocator<U>&) {
 } // namespace Json
 
 #pragma pack(pop)
+
+#endif
 
 #endif // JSON_ALLOCATOR_H_INCLUDED

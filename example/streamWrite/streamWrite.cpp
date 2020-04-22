@@ -12,11 +12,12 @@
 int main() {
   Json::Value root;
   Json::StreamWriterBuilder builder;
-  const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+  // const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+  Json::StreamWriter* writer(builder.newStreamWriter());
 
   root["Name"] = "robin";
   root["Age"] = 20;
   writer->write(root, &std::cout);
-
+  delete writer;
   return EXIT_SUCCESS;
 }

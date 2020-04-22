@@ -1,6 +1,7 @@
 #include "json/json.h"
 #include <fstream>
 #include <iostream>
+#include <cstdlib>
 /** \brief Parse from stream, collect comments and capture error info.
  * Example Usage:
  * $g++ readFromStream.cpp -ljsoncpp -std=c++11 -o readFromStream
