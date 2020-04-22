@@ -59,7 +59,7 @@ namespace Json {
 //using CharReaderPtr = std::auto_ptr<CharReader>;
 //  typedef std::unique_ptr<CharReader> CharReaderPtr;
   typedef CharReader* CharReaderPtr;
->>>>>>> a9d20a2... edit
+
 #endif
 
 // Implementation of class Features
@@ -1024,7 +1024,7 @@ bool OurReader::containsNewLine(OurReader::Location begin,
 }
 
 OurReader::OurReader(OurFeatures const& features)
-    : errors_(), document_(), begin_(JSONCPP_NULL), end_(JSONCPP_NULL), current_(JSONCPP_NULL), lastValueEnd(JSONCPP_NULL),
+    : errors_(), document_(), begin_(JSONCPP_NULL), end_(JSONCPP_NULL), current_(JSONCPP_NULL), lastValueEnd_(JSONCPP_NULL),
       lastValue_(JSONCPP_NULL), lastValueHasAComment_(false), commentsBefore_(), features_(features), collectComments_(false) {}
 
 bool OurReader::parse(const char* beginDoc, const char* endDoc, Value& root,
@@ -1912,7 +1912,7 @@ public:
 };
 
 CharReaderBuilder::CharReaderBuilder() { setDefaults(&settings_); }
-CharReaderBuilder::~CharReaderBuilder() {};
+CharReaderBuilder::~CharReaderBuilder() {}
 CharReader* CharReaderBuilder::newCharReader() const {
   bool collectComments = settings_["collectComments"].asBool();
   OurFeatures features = OurFeatures::all();

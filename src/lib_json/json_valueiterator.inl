@@ -99,7 +99,7 @@ char const* ValueIteratorBase::memberName(char const** end) const {
   const char* cname = (*current_).first.data();
   if (!cname) {
     *end = JSONCPP_NULL;
-    return JSONCPP_NULL;;
+    return JSONCPP_NULL;
   }
   *end = cname + (*current_).first.length();
   return cname;
@@ -113,7 +113,7 @@ char const* ValueIteratorBase::memberName(char const** end) const {
 // //////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////
 
-ValueConstIterator::ValueConstIterator() {};
+ValueConstIterator::ValueConstIterator() {}
 
 ValueConstIterator::ValueConstIterator(
     const Value::ObjectValues::iterator& current)

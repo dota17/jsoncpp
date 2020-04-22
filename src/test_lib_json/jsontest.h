@@ -61,7 +61,7 @@ public:
   /// Not encapsulated to prevent step into when debugging failed assertions
   /// Incremented by one on assertion predicate entry, decreased by one
   /// by addPredicateContext().
-  PredicateContext::Id predicateId_{1};
+  PredicateContext::Id predicateId_;
 
   /// \internal Implementation detail for predicate macros
   PredicateContext* predicateStackTail_;
@@ -70,7 +70,7 @@ public:
 
   /// Adds an assertion failure.
   TestResult& addFailure(const char* file, unsigned int line,
-                         const char* expr = nullptr);
+                         const char* expr = JSONCPP_NULL);
 
   /// Removes the last PredicateContext added to the predicate stack
   /// chained list.
@@ -84,7 +84,10 @@ public:
   // Generic operator that will work with anything ostream can deal with.
   template <typename T> TestResult& operator<<(const T& value) {
     Json::OStringStream oss;
-    oss << std::setprecision(16) << std::hexfloat << value;
+    // oss << std::setprecision(16) << std::hexfloat << value;
+    oss.precision(16);
+    oss.setf(std::ios_base::floatfield);
+    oss << value;
     return addToLastFailure(oss.str());
   }
 
@@ -106,9 +109,9 @@ private:
   Failures failures_;
   Json::String name_;
   PredicateContext rootPredicateNode_;
-  PredicateContext::Id lastUsedPredicateId_{0};
+  PredicateContext::Id lastUsedPredicateId_;
   /// Failure which is the target of the messages added using operator <<
-  Failure* messageTarget_{nullptr};
+  Failure* messageTarget_;
 };
 
 class TestCase {

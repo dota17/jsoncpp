@@ -1079,12 +1079,12 @@ void Value::dupMeta(const Value& other) {
       const CommentInfo& otherComment = other.comments_[comment];
       if(otherComment.comment_)
         comments_[comment].setComment(otherComment.comment_,
-                                      strlen(otherComment.comment_))
+                                      strlen(otherComment.comment_));
     }
   } else {
     comments_ = NULL;
   }
-  comments_ = other.comments_;
+  // comments_ = other.comments_;
   start_ = other.start_;
   limit_ = other.limit_;
 }
@@ -1459,9 +1459,9 @@ void Value::setComment(const char* comment,
 }
 
 void Value::setComment(const char* comment, CommentPlacement placement) {
-  setComment(comment, comment.length(), placement);
+  setComment(comment, strlen(comment), placement);
 }
-void Value::setComment(const char* comment, CommentPlacement placement) {
+void Value::setComment(const String& comment, CommentPlacement placement) {
   setComment(comment.c_str(), comment.length(), placement);
 }
 bool Value::hasComment(CommentPlacement placement) const {
@@ -1469,7 +1469,7 @@ bool Value::hasComment(CommentPlacement placement) const {
 }
 String Value::getComment(CommentPlacement placement) const {
   if (hasComment(placement))
-    return comments_[placement].comment_
+    return comments_[placement].comment_;
   return "";
 }
 #if 0
@@ -1602,7 +1602,7 @@ Value::iterator Value::end() {
 // class PathArgument
 // //////////////////////////////////////////////////////////////////
 
-PathArgument::PathArgument() {};
+PathArgument::PathArgument() {}
 
 PathArgument::PathArgument(ArrayIndex index)
     : index_(index), kind_(kindIndex) {}

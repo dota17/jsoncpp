@@ -15,7 +15,7 @@ int main() {
   const std::string rawJson = "{\"Age\": 20, \"Name\": \"colin\"}";
   // const auto rawJsonLength = static_cast<int>(rawJson.length());
   const int rawJsonLength = static_cast<int>(rawJson.length());
-  constexpr bool shouldUseOldWay = false;
+  JSONCPP_CONST bool shouldUseOldWay = false;
   JSONCPP_STRING err;
   Json::Value root;
 

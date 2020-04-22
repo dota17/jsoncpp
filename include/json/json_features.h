@@ -39,7 +39,7 @@ public:
   /** \brief Initialize the configuration like JsonConfig::allFeatures;
    */
   Features();
-
+#if JSONCPP_VERSION_11
   /// \c true if comments are allowed. Default: \c true.
   bool allowComments_{true};
 

@@ -229,14 +229,14 @@ class JSONCPP_DEPRECATED("Use StreamWriterBuilder instead") JSON_API
     StyledWriter : public Writer {
 public:
   StyledWriter();
-  ~StyledWriter() {false}; {};
+  ~StyledWriter() JSONCPP_OVERRIDE {};
 
 public: // overridden from Writer
   /** \brief Serialize a Value in <a HREF="http://www.json.org">JSON</a> format.
    * \param root Value to serialize.
    * \return String containing the JSON document that represents the root value.
    */
-  String write(const Value& root) {false};;
+  String write(const Value& root) JSONCPP_OVERRIDE;
 
 private:
   void writeValue(const Value& value);
