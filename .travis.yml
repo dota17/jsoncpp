@@ -13,21 +13,43 @@ addons:
     - meson
     - ninja
     update: false # do not update homebrew by default
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    - llvm-toolchain-xenial-8
-    packages:
-    - clang-format-8
-    - clang-8
-    - valgrind
 matrix:
   allow_failures:
     - os: osx
   include:
+    - name: Linux xenial gcc cmake
+      os: linux
+      dist: precise
+      addons:
+        apt:
+          sources:
+          - ubuntu-toolchain-r-test
+          packages:
+          - gcc-4.6
+          - g++-4.6
+          - valgrind
+      compiler: gcc
+      env:
+        - MATRIX_EVAL="CC=gcc-4.6 && CXX=g++-4.6"
+      install:
+        - echo ${PATH}
+        - ls /usr/local
+        - export PATH=/usr/bin:${PATH}
+        - echo ${CXX}
+        - ${CXX} --version
+      script: ./.travis_scripts/cmake_builder.sh
     - name: Mac clang meson static release testing
       os: osx
       osx_image: xcode11
+      addons:
+        apt:
+          sources:
+          - ubuntu-toolchain-r-test
+          - llvm-toolchain-xenial-8
+          packages:
+          - clang-format-8
+          - clang-8
+          - valgrind
       compiler: clang
       env:
          CXX="clang++"
@@ -38,6 +60,15 @@ matrix:
     - name: Linux xenial clang meson static release testing
       os: linux
       dist: xenial
+      addons:
+        apt:
+          sources:
+          - ubuntu-toolchain-r-test
+          - llvm-toolchain-xenial-8
+          packages:
+          - clang-format-8
+          - clang-8
+          - valgrind
       compiler: clang
       env:
          CXX="clang++"
@@ -53,6 +84,15 @@ matrix:
     - name: Linux xenial gcc cmake coverage
       os: linux
       dist: xenial
+      addons:
+        apt:
+          sources:
+          - ubuntu-toolchain-r-test
+          - llvm-toolchain-xenial-8
+          packages:
+          - clang-format-8
+          - clang-8
+          - valgrind
       compiler: gcc
       env:
         CXX=g++
