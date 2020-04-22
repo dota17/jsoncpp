@@ -84,9 +84,9 @@
 namespace Json {
 
 #if __cplusplus >= 201103L || (defined(_CPPLIB_VER) && _CPPLIB_VER >= 520)
-using StreamWriterPtr = std::unique_ptr<StreamWriter>;
+typedef std::unique_ptr<StreamWriter> StreamWriterPtr;
 #else
-using StreamWriterPtr = std::auto_ptr<StreamWriter>;
+typedef std::auto_ptr<StreamWriter> StreamWriterPtr;
 #endif
 
 String valueToString(LargestInt value) {
@@ -893,7 +893,7 @@ private:
   void writeCommentAfterValueOnSameLine(Value const& root);
   static bool hasCommentForValue(const Value& value);
 
-  using ChildValues = std::vector<String>;
+  typedef std::vector<String> ChildValues;
 
   ChildValues childValues_;
   String indentString_;

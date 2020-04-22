@@ -194,21 +194,21 @@ class JSON_API Value {
   friend class ValueIteratorBase;
 
 public:
-  using Members = std::vector<String>;
-  using iterator = ValueIterator;
-  using const_iterator = ValueConstIterator;
-  using UInt = Json::UInt;
-  using Int = Json::Int;
+  typedef std::vector<String> Members;
+  typedef ValueIterator iterator;
+  typedef ValueConstIterator const_iterator;
+  typedef Json::UInt UInt;
+  typedef Json::Int Int;
 #if defined(JSON_HAS_INT64)
-  using UInt64 = Json::UInt64;
-  using Int64 = Json::Int64;
+  typedef Json::UInt64 UInt64;
+  typedef Json::Int64 Int64;
 #endif // defined(JSON_HAS_INT64)
-  using LargestInt = Json::LargestInt;
-  using LargestUInt = Json::LargestUInt;
-  using ArrayIndex = Json::ArrayIndex;
+  typedef Json::LargestInt LargestInt;
+  typedef Json::LargestUInt LargestUInt;
+  typedef Json::ArrayIndex ArrayIndex;
 
   // Required for boost integration, e. g. BOOST_TEST
-  using value_type = std::string;
+  typedef std::string value_type;
 
 #if JSON_USE_NULLREF
   // Binary compatibility kludges, do not use.
@@ -728,8 +728,8 @@ public:
   Value& make(Value& root) const;
 
 private:
-  using InArgs = std::vector<const PathArgument*>;
-  using Args = std::vector<PathArgument>;
+  typedef std::vector<const PathArgument*> InArgs;
+  typedef std::vector<PathArgument> Args;
 
   void makePath(const String& path, const InArgs& in);
   void addPathInArg(const String& path, const InArgs& in,
@@ -744,10 +744,10 @@ private:
  */
 class JSON_API ValueIteratorBase {
 public:
-  using iterator_category = std::bidirectional_iterator_tag;
-  using size_t = unsigned int;
-  using difference_type = int;
-  using SelfType = ValueIteratorBase;
+  typedef std::bidirectional_iterator_tag iterator_category;
+  typedef unsigned int size_t;
+  typedef int difference_type;
+  typedef ValueIteratorBase SelfType;
 
   bool operator==(const SelfType& other) const { return isEqual(other); }
 
@@ -823,9 +823,9 @@ public:
   using value_type = const Value;
   // typedef unsigned int size_t;
   // typedef int difference_type;
-  using reference = const Value&;
-  using pointer = const Value*;
-  using SelfType = ValueConstIterator;
+  typedef const Value& reference;
+  typedef const Value* pointer;
+  typedef ValueConstIterator SelfType;
 
   ValueConstIterator();
   ValueConstIterator(ValueIterator const& other);
@@ -871,12 +871,12 @@ class JSON_API ValueIterator : public ValueIteratorBase {
   friend class Value;
 
 public:
-  using value_type = Value;
-  using size_t = unsigned int;
-  using difference_type = int;
-  using reference = Value&;
-  using pointer = Value*;
-  using SelfType = ValueIterator;
+  typedef Value value_type;
+  typedef unsigned int size_t;
+  typedef int difference_type;
+  typedef Value& reference;
+  typedef Value* pointer;
+  typedef ValueIterator SelfType;
 
   ValueIterator();
   explicit ValueIterator(const ValueConstIterator& other);

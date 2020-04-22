@@ -123,32 +123,35 @@ extern JSON_API int msvc_pre1900_c99_snprintf(char* outBuf, size_t size,
 
 #if !defined(JSON_IS_AMALGAMATION)
 
+#if JSONCPP_VER_11
 #include "allocator.h"
+#endif
 #include "version.h"
 
 #endif // if !defined(JSON_IS_AMALGAMATION)
 
 namespace Json {
-using Int = int;
-using UInt = unsigned int;
+typedef int Int;
+typedef unsigned int UInt;
 #if defined(JSON_NO_INT64)
-using LargestInt = int;
-using LargestUInt = unsigned int;
+typedef int LargestInt;
+typedef unsigned int LargestUInt;
 #undef JSON_HAS_INT64
 #else                 // if defined(JSON_NO_INT64)
 // For Microsoft Visual use specific types as long long is not supported
 #if defined(_MSC_VER) // Microsoft Visual Studio
-using Int64 = __int64;
-using UInt64 = unsigned __int64;
+typedef __int64 Int64;
+typedef unsigned __int64 UInt64;
 #else                 // if defined(_MSC_VER) // Other platforms, use long long
-using Int64 = int64_t;
-using UInt64 = uint64_t;
+typedef int64_t Int64;
+typedef uint64_t UInt64;
 #endif                // if defined(_MSC_VER)
-using LargestInt = Int64;
-using LargestUInt = UInt64;
+typedef Int64 LargestInt;
+typedef UInt64 LargestUInt;
 #define JSON_HAS_INT64
 #endif // if defined(JSON_NO_INT64)
 
+#if JSONCPP_VER_11
 template <typename T>
 using Allocator =
     typename std::conditional<JSONCPP_USING_SECURE_MEMORY, SecureAllocator<T>,
@@ -162,13 +165,20 @@ using OStringStream =
                              String::allocator_type>;
 using IStream = std::istream;
 using OStream = std::ostream;
+#else
+typedef std::string String;
+typedef ostringstream OStringStream;
+typedef ostream OStream;
+typedef istringstream IStringStream;
+typedef istream IStream;
+#endif // JSONCPP_VER_11
 } // namespace Json
 
 // Legacy names (formerly macros).
-using JSONCPP_STRING = Json::String;
-using JSONCPP_ISTRINGSTREAM = Json::IStringStream;
-using JSONCPP_OSTRINGSTREAM = Json::OStringStream;
-using JSONCPP_ISTREAM = Json::IStream;
-using JSONCPP_OSTREAM = Json::OStream;
+typedef Json::String JSONCPP_STRING;
+typedef Json::IStringStream JSONCPP_ISTRINGSTREAM;
+typedef Json::OStringStream JSONCPP_OSTRINGSTREAM;
+typedef Json::IStream JSONCPP_ISTREAM;
+typedef Json::OStream JSONCPP_OSTREAM;
 
 #endif // JSON_CONFIG_H_INCLUDED

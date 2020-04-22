@@ -25,7 +25,7 @@
 #include <sstream>
 #include <string>
 
-using CharReaderPtr = std::unique_ptr<Json::CharReader>;
+typedef std::unique_ptr<Json::CharReader> CharReaderPtr;
 
 // Make numeric limits more convenient to talk about.
 // Assumes int type in 32 bits.
@@ -3276,8 +3276,8 @@ JSONTEST_FIXTURE_LOCAL(CharReaderFailIfExtraTest, parseComment) {
 }
 
 struct CharReaderAllowDropNullTest : JsonTest::TestCase {
-  using Value = Json::Value;
-  using ValueCheck = std::function<void(const Value&)>;
+  typedef Json::Value Value;
+  typedef std::function<void(const Value&)> ValueCheck;
 
   Value nullValue = Value{Json::nullValue};
   Value emptyArray = Value{Json::arrayValue};
@@ -3606,7 +3606,7 @@ JSONTEST_FIXTURE_LOCAL(IteratorTest, reverseIterator) {
   json["k1"] = "a";
   json["k2"] = "b";
   std::vector<std::string> values;
-  using Iter = decltype(json.begin());
+  typedef Json::Value::const_iterator Iter;
   auto re = std::reverse_iterator<Iter>(json.begin());
   for (auto it = std::reverse_iterator<Iter>(json.end()); it != re; ++it) {
     values.push_back(it->asString());

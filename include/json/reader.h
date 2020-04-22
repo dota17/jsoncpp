@@ -187,7 +187,7 @@ private:
     Location extra_;
   };
 
-  using Errors = std::deque<ErrorInfo>;
+  typedef std::deque<ErrorInfo> Errors;
 
   bool readToken(Token& token);
   void skipSpaces();
@@ -226,7 +226,7 @@ private:
   static bool containsNewLine(Location begin, Location end);
   static String normalizeEOL(Location begin, Location end);
 
-  using Nodes = std::stack<Value*>;
+  typedef std::stack<Value*> Nodes;
   Nodes nodes_;
   Errors errors_;
   String document_;

@@ -24,7 +24,7 @@ struct Options {
   Json::String path;
   Json::Features features;
   bool parseOnly;
-  using writeFuncType = Json::String (*)(Json::Value const&);
+  typedef Json::String (*writeFuncType)(Json::Value const&);
   writeFuncType write;
 };
 
