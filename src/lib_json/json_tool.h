@@ -70,7 +70,8 @@ enum {
   uintToStringBufferSize = 3 * sizeof(LargestUInt) + 1
 };
 
-// Defines a char buffer for use with uintToString().
+// Defines a char buffer for use with uintToString().=
+// using UIntToStringBuffer = char[uintToStringBufferSize];
 typedef char UIntToStringBuffer[uintToStringBufferSize];
 
 /** Converts an unsigned integer to string.

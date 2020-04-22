@@ -18,30 +18,6 @@ include(CheckCXXSymbolExists)
 check_include_file_cxx(clocale HAVE_CLOCALE)
 check_cxx_symbol_exists(localeconv clocale HAVE_LOCALECONV)
 
-if(CMAKE_VERSION VERSION_LESS 3.0.0)
-    # The "LANGUAGE CXX" parameter is not supported in CMake versions below 3,
-    # so the C compiler and header has to be used.
-    check_include_file(locale.h HAVE_LOCALE_H)
-    set(CMAKE_EXTRA_INCLUDE_FILES locale.h)
-    check_type_size("struct lconv" LCONV_SIZE)
-    unset(CMAKE_EXTRA_INCLUDE_FILES)
-    check_struct_has_member("struct lconv" decimal_point locale.h HAVE_DECIMAL_POINT)
-else()
-    set(CMAKE_EXTRA_INCLUDE_FILES clocale)
-    check_type_size(lconv LCONV_SIZE LANGUAGE CXX)
-    unset(CMAKE_EXTRA_INCLUDE_FILES)
-    check_struct_has_member(lconv decimal_point clocale HAVE_DECIMAL_POINT LANGUAGE CXX)
-endif()
-
-if(NOT (HAVE_CLOCALE AND HAVE_LCONV_SIZE AND HAVE_DECIMAL_POINT AND HAVE_LOCALECONV))
-    message(WARNING "Locale functionality is not supported")
-    if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12.0)
-        add_compile_definitions(JSONCPP_NO_LOCALE_SUPPORT)
-    else()
-        add_definitions(-DJSONCPP_NO_LOCALE_SUPPORT)
-    endif()
-endif()
-
 set(JSONCPP_INCLUDE_DIR ../../include)
 
 set(PUBLIC_HEADERS
@@ -96,7 +72,9 @@ endif()
 # Specify compiler features required when compiling a given target.
 # See https://cmake.org/cmake/help/v3.1/prop_gbl/CMAKE_CXX_KNOWN_FEATURES.html#prop_gbl:CMAKE_CXX_KNOWN_FEATURES
 # for complete list of features available
+
 #if(CMAKE_CXX_STANDARD EQUAL "11")
+
 target_compile_features(jsoncpp_lib PUBLIC
         cxx_std_11 # Compiler mode is aware of C++ 11.
         #MSVC 1900 cxx_alignas # Alignment control alignas, as defined in N2341.
@@ -143,11 +121,11 @@ target_compile_features(jsoncpp_lib PUBLIC
         cxx_variadic_macros # Variadic macros, as defined in N1653.
         cxx_variadic_templates # Variadic templates, as defined in N2242.
 )
-#else()
-	set(CMAKE_CXX_STANDARD 98)
-	target_compile_features(jsoncpp_lib PUBLIC)
-#endif()
 
+    set(CMAKE_CXX_STANDARD 98)
+    target_compile_features(jsoncpp_lib PUBLIC)
+
+endif()
 install(TARGETS jsoncpp_lib ${INSTALL_EXPORT}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

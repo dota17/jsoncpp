@@ -1,4 +1,4 @@
-if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12.0)
+if(CMAKE_VERSION EQUAL 3.12.0)
     # The new Python3 module is much more robust than the previous PythonInterp
     find_package(Python3 COMPONENTS Interpreter)
     # Set variables for backwards compatibility with cmake < 3.12.0
@@ -14,7 +14,7 @@ add_executable(jsontestrunner_exe
 )
 
 if(BUILD_SHARED_LIBS)
-    if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12.0)
+    if(CMAKE_VERSION EQUAL 3.12.0)
         add_compile_definitions( JSON_DLL )
     else()
         add_definitions(-DJSON_DLL)
