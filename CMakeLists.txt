@@ -12,7 +12,7 @@
 # CMake versions greater than the JSONCPP_NEWEST_VALIDATED_POLICIES_VERSION policies will
 # continue to generate policy warnings "CMake Warning (dev)...Policy CMP0XXX is not set:"
 #
-set(JSONCPP_OLDEST_VALIDATED_POLICIES_VERSION "3.8.0")
+set(JSONCPP_OLDEST_VALIDATED_POLICIES_VERSION "3.5.0")
 set(JSONCPP_NEWEST_VALIDATED_POLICIES_VERSION "3.13.2")
 cmake_minimum_required(VERSION ${JSONCPP_OLDEST_VALIDATED_POLICIES_VERSION})
 if("${CMAKE_VERSION}" VERSION_LESS "${JSONCPP_NEWEST_VALIDATED_POLICIES_VERSION}")
@@ -36,25 +36,6 @@ foreach(pold "") # Currently Empty
         cmake_policy(SET ${pold} OLD)
     endif()
 endforeach()
-
-# ==== Define language standard configurations requiring at least c++11 standard
-if(CMAKE_CXX_STANDARD EQUAL "98")
-    message(FATAL_ERROR "CMAKE_CXX_STANDARD:STRING=98 is not supported.")
-endif()
-
-#####
-##  Set the default target properties
-if(NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 11) # Supported values are ``11``, ``14``, and ``17``.
-endif()
-if(NOT CMAKE_CXX_STANDARD_REQUIRED)
-    set(CMAKE_CXX_STANDARD_REQUIRED ON)
-endif()
-if(NOT CMAKE_CXX_EXTENSIONS)
-    set(CMAKE_CXX_EXTENSIONS OFF)
-endif()
-
-# ====
 
 # Ensures that CMAKE_BUILD_TYPE has a default value
 if(NOT DEFINED CMAKE_BUILD_TYPE)
@@ -84,7 +65,7 @@ project(JSONCPP
         LANGUAGES CXX)
 
 message(STATUS "JsonCpp Version: ${JSONCPP_VERSION_MAJOR}.${JSONCPP_VERSION_MINOR}.${JSONCPP_VERSION_PATCH}")
-set(JSONCPP_SOVERSION 23)
+set(JSONCPP_SOVERSION 24)
 
 option(JSONCPP_WITH_TESTS "Compile and (for jsoncpp_check) run JsonCpp test executables" ON)
 option(JSONCPP_WITH_POST_BUILD_UNITTEST "Automatically run unit-tests as a post build step" ON)
@@ -94,6 +75,25 @@ option(JSONCPP_WITH_PKGCONFIG_SUPPORT "Generate and install .pc files" ON)
 option(JSONCPP_WITH_CMAKE_PACKAGE "Generate and install cmake package files" ON)
 option(JSONCPP_WITH_EXAMPLE "Compile JsonCpp example" OFF)
 option(BUILD_SHARED_LIBS "Build jsoncpp_lib as a shared library." OFF)
+option(BUILD_WITH_CXX_11 "Build jsoncpp_lib with C++11 standard." ON)
+
+##  To compatible with C++0x and C++1x
+set(CMAKE_MINIMUN_CXX_STANDARD 98)
+set(CMAKE_CXX_COMPILER "/usr/bin/g++")
+
+execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE cxx_version)
+if(cxx_version GREATER "4.8.0")
+	if(BUILD_WITH_CXX_11)
+	    set(CMAKE_CXX_STANDARD 11)
+	    message(STATUS "Compiled with C++11(or newer) standard!")
+	else()
+	    set(CMAKE_CXX_STANDARD 98)
+	    message(STATUS "Compiled with C++0x standard!")
+	endif()
+else()
+	set(CMAKE_CXX_STANDARD 98)
+	message(STATUS "Compiled with C++0x standard!")
+endif()
 
 # Enable runtime search path support for dynamic libraries on OSX
 if(APPLE)
@@ -115,19 +115,19 @@ macro(use_compilation_warning_as_error)
     if(MSVC)
         # Only enabled in debug because some old versions of VS STL generate
         # warnings when compiled in release configuration.
-        if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12.0)
+        if(CMAKE_VERSION VERSION_GREATER 3.12.0 OR CMAKE_VERSION VERSION_EQUAL 3.12.0)
             add_compile_options($<$<CONFIG:Debug>:/WX>)
         else()
             set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /WX ")
         endif()
     elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-        if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12.0)
+        if(CMAKE_VERSION VERSION_GREATER 3.12.0 OR CMAKE_VERSION VERSION_EQUAL 3.12.0)
             add_compile_options(-Werror)
         else()
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
         endif()
         if(JSONCPP_WITH_STRICT_ISO)
-            if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12.0)
+            if(CMAKE_VERSION VERSION_GREATER 3.12.0 OR CMAKE_VERSION VERSION_EQUAL 3.12.0)
                 add_compile_options(-pedantic-errors)
             else()
                 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic-errors")
@@ -142,7 +142,7 @@ include_directories(${jsoncpp_SOURCE_DIR}/include)
 if(MSVC)
     # Only enabled in debug because some old versions of VS STL generate
     # unreachable code warning when compiled in release configuration.
-    if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12.0)
+    if(CMAKE_VERSION VERSION_GREATER 3.12.0 OR CMAKE_VERSION VERSION_EQUAL 3.12.0)
         add_compile_options($<$<CONFIG:Debug>:/W4>)
     else()
         set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W4 ")
@@ -151,14 +151,14 @@ endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     # using regular Clang or AppleClang
-    if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12.0)
+    if(CMAKE_VERSION VERSION_GREATER 3.12.0 OR CMAKE_VERSION VERSION_EQUAL 3.12.0)
         add_compile_options(-Wall -Wconversion -Wshadow -Werror=conversion -Werror=sign-compare)
     else()
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wconversion -Wshadow -Werror=conversion -Werror=sign-compare")
     endif()
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # using GCC
-    if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12.0)
+    if(CMAKE_VERSION VERSION_GREATER 3.12.0 OR CMAKE_VERSION VERSION_EQUAL 3.12.0)
         add_compile_options(-Wall -Wconversion -Wshadow -Wextra)
     else()
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wconversion -Wshadow -Wextra")
@@ -166,14 +166,14 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # not yet ready for -Wsign-conversion
 
     if(JSONCPP_WITH_STRICT_ISO)
-        if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12.0)
+        if(CMAKE_VERSION VERSION_GREATER 3.12.0 OR CMAKE_VERSION VERSION_EQUAL 3.12.0)
             add_compile_options(-Wpedantic)
         else()
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wpedantic")
         endif()
     endif()
     if(JSONCPP_WITH_WARNING_AS_ERROR)
-        if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12.0)
+        if(CMAKE_VERSION VERSION_GREATER 3.12.0 OR CMAKE_VERSION VERSION_EQUAL 3.12.0)
             add_compile_options(-Werror=conversion)
         else()
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=conversion")
@@ -181,14 +181,14 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     endif()
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
     # using Intel compiler
-    if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12.0)
+    if(CMAKE_VERSION VERSION_GREATER 3.12.0 OR CMAKE_VERSION VERSION_EQUAL 3.12.0)
         add_compile_options(-Wall -Wconversion -Wshadow -Wextra -Werror=conversion)
     else()
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wconversion -Wshadow -Wextra -Werror=conversion")
     endif()
 
     if(JSONCPP_WITH_STRICT_ISO AND NOT JSONCPP_WITH_WARNING_AS_ERROR)
-        if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12.0)
+        if(CMAKE_VERSION VERSION_GREATER 3.12.0 OR CMAKE_VERSION VERSION_EQUAL 3.12.0)
             add_compile_options(-Wpedantic)
         else()
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wpedantic")

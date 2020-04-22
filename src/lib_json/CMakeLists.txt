@@ -74,7 +74,7 @@ endif()
 
 
 if(BUILD_SHARED_LIBS)
-    if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12.0)
+    if(CMAKE_VERSION VERSION_GREATER 3.12.0 OR CMAKE_VERSION VERSION_EQUAL 3.12.0)
         add_compile_definitions(JSON_DLL_BUILD)
     else()
         add_definitions(-DJSON_DLL_BUILD)
@@ -96,6 +96,7 @@ endif()
 # Specify compiler features required when compiling a given target.
 # See https://cmake.org/cmake/help/v3.1/prop_gbl/CMAKE_CXX_KNOWN_FEATURES.html#prop_gbl:CMAKE_CXX_KNOWN_FEATURES
 # for complete list of features available
+#if(CMAKE_CXX_STANDARD EQUAL "11")
 target_compile_features(jsoncpp_lib PUBLIC
         cxx_std_11 # Compiler mode is aware of C++ 11.
         #MSVC 1900 cxx_alignas # Alignment control alignas, as defined in N2341.
@@ -142,6 +143,10 @@ target_compile_features(jsoncpp_lib PUBLIC
         cxx_variadic_macros # Variadic macros, as defined in N1653.
         cxx_variadic_templates # Variadic templates, as defined in N2242.
 )
+#else()
+	set(CMAKE_CXX_STANDARD 98)
+	target_compile_features(jsoncpp_lib PUBLIC)
+#endif()
 
 install(TARGETS jsoncpp_lib ${INSTALL_EXPORT}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
