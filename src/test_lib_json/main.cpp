@@ -228,13 +228,13 @@ JSONTEST_FIXTURE_LOCAL(ValueTest, objects) {
   const char unknownIdKey[] = "unknown id";
   const Json::Value* foundUnknownId =
       object1_.find(unknownIdKey, unknownIdKey + strlen(unknownIdKey));
-  JSONTEST_ASSERT_EQUAL(JSONCPP_NULL, foundUnknownId);
+  JSONTEST_ASSERT(JSONCPP_NULL == foundUnknownId);
 
   // Access through demand()
   const char yetAnotherIdKey[] = "yet another id";
   const Json::Value* foundYetAnotherId =
       object1_.find(yetAnotherIdKey, yetAnotherIdKey + strlen(yetAnotherIdKey));
-  JSONTEST_ASSERT_EQUAL(JSONCPP_NULL, foundYetAnotherId);
+  JSONTEST_ASSERT(JSONCPP_NULL == foundYetAnotherId);
   Json::Value* demandedYetAnotherId = object1_.demand(
       yetAnotherIdKey, yetAnotherIdKey + strlen(yetAnotherIdKey));
   JSONTEST_ASSERT(demandedYetAnotherId != JSONCPP_NULL);
@@ -264,7 +264,7 @@ JSONTEST_FIXTURE_LOCAL(ValueTest, objects) {
   object1_["some other id"] = "foo";
   Json::Value* gotPtr = JSONCPP_NULL;
   did = object1_.removeMember("some other id", gotPtr);
-  JSONTEST_ASSERT_EQUAL(JSONCPP_NULL, gotPtr);
+  JSONTEST_ASSERT(JSONCPP_NULL == gotPtr);
   JSONTEST_ASSERT_EQUAL(true, did);
 
   // Using other removeMember interfaces, the test idea is the same as above.
