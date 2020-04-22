@@ -5,12 +5,6 @@
 
 #include "fuzz.h"
 
-#include <cstdint>
-#include <json/config.h>
-#include <json/json.h>
-#include <memory>
-#include <string>
-
 namespace Json {
 class Exception;
 }
@@ -41,12 +35,11 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
   builder.settings_["collectComments"] = hash_settings & (1 << 9);
   builder.settings_["allowTrailingCommas_"] = hash_settings & (1 << 10);
 
-  std::unique_ptr<Json::CharReader> reader(builder.newCharReader());
-
+  Json::CharReader* reader(builder.newCharReader());
   Json::Value root;
-  const auto data_str = reinterpret_cast<const char*>(data);
+  const char* data_str = reinterpret_cast<const char*>(data);
   try {
-    reader->parse(data_str, data_str + size, &root, nullptr);
+    reader->parse(data_str, data_str + size, &root, JSONCPP_NULL);
   } catch (Json::Exception const&) {
   }
   // Whether it succeeded or not doesn't matter.

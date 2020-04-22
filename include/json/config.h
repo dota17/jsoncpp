@@ -82,7 +82,7 @@ extern JSON_API int msvc_pre1900_c99_snprintf(char* outBuf, size_t size,
 #define JSONCPP_NOEXCEPT noexcept
 #define JSONCPP_OP_EXPLICIT explicit
 #define JSONCPP_OVERRIDE override
-#define JSONCPP_MOVER(value) std::move(value)
+#define JSONCPP_MOVE(value) std::move(value)
 #else
 #define JSONCPP_VER_11 0
 #define JSONCPP_NULL NULL
@@ -92,7 +92,7 @@ extern JSON_API int msvc_pre1900_c99_snprintf(char* outBuf, size_t size,
 #define JSONCPP_NOEXCEPT throw()
 #define JSONCPP_OP_EXPLICIT
 #define JSONCPP_OVERRIDE
-#define JSONCPP_MOVER(value) value
+#define JSONCPP_MOVE(value) value
 #endif
 
 // Define deprecated attribute

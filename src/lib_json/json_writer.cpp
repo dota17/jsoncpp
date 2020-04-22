@@ -432,7 +432,7 @@ void FastWriter::writeValue(const Value& value) {
 // //////////////////////////////////////////////////////////////////
 
 StyledWriter::StyledWriter()
-    : rightMargin_(74), indentSize(3), addChildValues_() {}
+    : rightMargin_(74), indentSize_(3), addChildValues_() {}
 
 String StyledWriter::write(const Value& root) {
   document_.clear();

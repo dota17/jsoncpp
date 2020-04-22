@@ -6,8 +6,7 @@
 #ifndef FUZZ_H_INCLUDED
 #define FUZZ_H_INCLUDED
 
-#include <cstddef>
-#include <stdint.h>
+#include <json/json.h> // cstdint and cstddef are defined in this header
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size);
 
