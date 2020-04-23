@@ -17,27 +17,6 @@ matrix:
   allow_failures:
     - os: osx
   include:
-    - name: Linux xenial gcc cmake
-      os: linux
-      dist: precise
-      addons:
-        apt:
-          sources:
-          - ubuntu-toolchain-r-test
-          packages:
-          - gcc-4.6
-          - g++-4.6
-          - valgrind
-      compiler: gcc
-      env:
-        - MATRIX_EVAL="CC=gcc-4.6 && CXX=g++-4.6"
-      install:
-        - echo ${PATH}
-        - ls /usr/local
-        - export PATH=/usr/bin:${PATH}
-        - echo ${CXX}
-        - ${CXX} --version
-      script: ./.travis_scripts/cmake_builder.sh
     - name: Mac clang meson static release testing
       os: osx
       osx_image: xcode11
@@ -56,6 +35,7 @@ matrix:
          CC="clang"
          LIB_TYPE=static
          BUILD_TYPE=release
+         LANGUAGE_STANDARD="11"
       script: ./.travis_scripts/meson_builder.sh
     - name: Linux xenial clang meson static release testing
       os: linux
@@ -75,12 +55,38 @@ matrix:
          CC="clang"
          LIB_TYPE=static
          BUILD_TYPE=release
+         LANGUAGE_STANDARD="11"
       # before_install and install steps only needed for linux meson builds
       before_install:
           - source ./.travis_scripts/travis.before_install.${TRAVIS_OS_NAME}.sh
       install:
            - source ./.travis_scripts/travis.install.${TRAVIS_OS_NAME}.sh
       script: ./.travis_scripts/meson_builder.sh
+    - name: Linux xenial cmake static release gcc 4.6
+      os: linux
+      dist: precise
+      addons:
+        apt:
+          sources:
+          - ubuntu-toolchain-r-test
+          packages:
+          - gcc-4.6
+          - g++-4.6
+          - valgrind
+      compiler: gcc
+      env:
+         CC="gcc-4.6"
+         CXX="g++-4.6"
+         LIB_TYPE=static
+         BUILD_TYPE=release
+         LANGUAGE_STANDARD="03"
+      install:
+        - echo ${PATH}
+        - ls /usr/local
+        - export PATH=/usr/bin:${PATH}
+        - echo ${CXX}
+        - ${CXX} --version
+      script: ./.travis_scripts/cmake_builder.sh
     - name: Linux xenial gcc cmake coverage
       os: linux
       dist: xenial
@@ -102,6 +108,7 @@ matrix:
         BUILD_TYPE=Debug
         LIB_TYPE=shared
         DESTDIR=/tmp/cmake_json_cpp
+        LANGUAGE_STANDARD="11"
       before_install:
           - pip install --user cpp-coveralls
       script: ./.travis_scripts/cmake_builder.sh
