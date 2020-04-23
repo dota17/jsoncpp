@@ -26,9 +26,8 @@ matrix:
           - ubuntu-toolchain-r-test
           - llvm-toolchain-xenial-8
           packages:
-          - clang-format-8
+          - meson
           - clang-8
-          - valgrind
       compiler: clang
       env:
          CXX="clang++"
