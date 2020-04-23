@@ -12,9 +12,7 @@
 # CMake versions greater than the JSONCPP_NEWEST_VALIDATED_POLICIES_VERSION policies will
 # continue to generate policy warnings "CMake Warning (dev)...Policy CMP0XXX is not set:"
 #
-set(JSONCPP_OLDEST_VALIDATED_POLICIES_VERSION "2.8.0")
 set(JSONCPP_NEWEST_VALIDATED_POLICIES_VERSION "3.13.2")
-cmake_minimum_required(VERSION ${JSONCPP_OLDEST_VALIDATED_POLICIES_VERSION})
 if("${CMAKE_VERSION}" VERSION_LESS "${JSONCPP_NEWEST_VALIDATED_POLICIES_VERSION}")
     #Set and use the newest available cmake policies that are validated to work
     set(JSONCPP_CMAKE_POLICY_VERSION "${CMAKE_VERSION}")
@@ -84,16 +82,20 @@ set(CMAKE_CXX_COMPILER "/usr/bin/g++")
 execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE cxx_version)
 if(cxx_version GREATER "4.8.0")
 	if(BUILD_WITH_CXX_11)
+            set(JSONCPP_OLDEST_VALIDATED_POLICIES_VERSION "3.8.0")
 	    set(CMAKE_CXX_STANDARD 11)
 	    message(STATUS "Compiled with C++11(or newer) standard!")
 	else()
+            set(JSONCPP_OLDEST_VALIDATED_POLICIES_VERSION "2.8.0")
 	    set(CMAKE_CXX_STANDARD 98)
 	    message(STATUS "Compiled with C++0x standard!")
 	endif()
 else()
+        set(JSONCPP_OLDEST_VALIDATED_POLICIES_VERSION "2.8.0")
 	set(CMAKE_CXX_STANDARD 98)
 	message(STATUS "Compiled with C++0x standard!")
 endif()
+cmake_minimum_required(VERSION ${JSONCPP_OLDEST_VALIDATED_POLICIES_VERSION})
 
 # Enable runtime search path support for dynamic libraries on OSX
 if(APPLE)
