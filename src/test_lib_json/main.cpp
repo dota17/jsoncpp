@@ -83,9 +83,9 @@ struct ValueTest : JsonTest::TestCase {
   ValueTest()
       : emptyArray_(Json::arrayValue), emptyObject_(Json::objectValue),
         integer_(123456789), unsignedInteger_(34567890u),
-	smallUnsignedInteger_(Json::Value::UInt(Json::Value::maxInt)),
-	real_(1234.56789), float_(0.00390625f), emptyString_(""), string1_("a"),
-	string_("sometext with space"), true_(true), false_(false) {
+    smallUnsignedInteger_(Json::Value::UInt(Json::Value::maxInt)),
+    real_(1234.56789), float_(0.00390625f), emptyString_(""), string1_("a"),
+    string_("sometext with space"), true_(true), false_(false) {
     array1_.append(1234);
     object1_["id"] = 1234;
   }
@@ -2728,14 +2728,14 @@ JSONTEST_FIXTURE_LOCAL(ReaderTest, parseArray) {
 JSONTEST_FIXTURE_LOCAL(ReaderTest, parseString) {
   checkParse(R"([ "\u8a2a" ])");
   checkParse(
-      R"([ "\ud801" ])",
+      "[ \"\\ud801\" ]",
       {{2, 10,
         "additional six characters expected to parse unicode surrogate "
         "pair."}},
       "* Line 1, Column 3\n"
       "  additional six characters expected to parse unicode surrogate pair.\n"
       "See Line 1, Column 10 for detail.\n");
-  checkParse(R"([ "\ud801\d1234" ])",
+  checkParse("[ \"\\ud801\\d1234" ]",
              {{2, 16,
                "expecting another \\u token to begin the "
                "second half of a unicode surrogate pair"}},
@@ -3845,7 +3845,9 @@ class MemberTemplateIs : public JsonTest::TestCase {};
 
 JSONTEST_FIXTURE_LOCAL(MemberTemplateIs, BehavesSameAsNamedIs) {
   const Json::Value values[] = {true, 142, 40.63, "hello world"};
-  for (const Json::Value& j : values) {
+  // for (const Json::Value& j : values) {
+  for (size_t index = 0; index < sizeof(values) / sizeof(values[0]); index++) {
+    const Json::Value& j = values[index];
     JSONTEST_ASSERT_EQUAL(j.is<bool>(), j.isBool());
     JSONTEST_ASSERT_EQUAL(j.is<Json::Int>(), j.isInt());
     JSONTEST_ASSERT_EQUAL(j.is<Json::Int64>(), j.isInt64());

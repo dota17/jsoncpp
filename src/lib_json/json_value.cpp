@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <cstddef>
 #include <cstring>
 #include <sstream>
 #include <iostream>
@@ -213,7 +214,7 @@ namespace Json {
 
 #if JSON_USE_EXCEPTION
 Exception::Exception(String msg) : msg_(JSONCPP_MOVE(msg)) {}
-Exception::~Exception() JSONCPP_NOEXCEPT {};
+Exception::~Exception() JSONCPP_NOEXCEPT {}
 char const* Exception::what() const JSONCPP_NOEXCEPT { return msg_.c_str(); }
 RuntimeError::RuntimeError(String const& msg) : Exception(msg) {}
 LogicError::LogicError(String const& msg) : Exception(msg) {}
@@ -251,7 +252,7 @@ void Value::CommentInfo::setComment(const char* text, size_t len) {
   JSON_ASSERT(text != JSONCPP_NULL);
   JSON_ASSERT_MESSAGE(
       text[0] == '\0' || text[0] == '/',
-      "In Json::Value::setComment(): Comments must start with /");
+      "in Json::Value::setComment(): Comments must start with /");
 
   comment_ = duplicateStringValue(text, len);
 }

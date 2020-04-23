@@ -20,6 +20,7 @@ namespace Json {
  */
 class JSON_API Features {
 public:
+
   /** \brief A configuration that allows all features and assumes all strings
    * are UTF-8.
    * - C & C++ comments are allowed
@@ -39,7 +40,7 @@ public:
   /** \brief Initialize the configuration like JsonConfig::allFeatures;
    */
   Features();
-#if JSONCPP_VERSION_11
+#if JSONCPP_VER_11
   /// \c true if comments are allowed. Default: \c true.
   bool allowComments_{true};
 
@@ -52,7 +53,7 @@ public:
 
   /// \c true if numeric object key are allowed. Default: \c false.
   bool allowNumericKeys_{false};
-  
+
 #else
   /// \c true if comments are allowed. Default: \c true.
   bool allowComments_;

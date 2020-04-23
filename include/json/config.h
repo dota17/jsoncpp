@@ -56,11 +56,6 @@
 #define JSON_API
 #endif
 
-#if defined(_MSC_VER) && _MSC_VER < 1800
-#error                                                                         \
-    "ERROR:  Visual Studio 12 (2013) with _MSC_VER=1800 is the oldest supported compiler with sufficient C++11 capabilities"
-#endif
-
 #if defined(_MSC_VER) && _MSC_VER < 1900
 // As recommended at
 // https://stackoverflow.com/questions/2915672/snprintf-and-visual-studio-2010
@@ -77,8 +72,8 @@ extern JSON_API int msvc_pre1900_c99_snprintf(char* outBuf, size_t size,
 // #define JSON_NO_INT64 1
 
 // These Macros are maintained for backwards compatibility of external tools.
-#if (defined(_MSC_VER) && _MSC_VER >= 1900) ||                                \
-    (defined(__GNUC__) && __cplusplus >= 201103L) ||                          \
+#if (defined(_MSC_VER) && _MSC_VER >= 1900) ||                                 \
+    (defined(__GNUC__) && __cplusplus >= 201103L) ||                           \
     (defined(__clang__) && __clang_major__ == 3 && __clang_minor__ > 3 )
 
 #define JSONCPP_VER_11 1
@@ -105,7 +100,7 @@ extern JSON_API int msvc_pre1900_c99_snprintf(char* outBuf, size_t size,
 // Define deprecated attribute
 // [[deprecated]] is in C++14 or in Visual Studio 2015 and later
 // For compatibility, [[deprecated]] is not used
-// and there is no preformance improvement for this usage, so we don't need to
+// and there is no performance improvement for this usage, so we don't need to
 // use it.
 #ifdef __clang__
 #if __has_extension(attribute_deprecated_with_message)
@@ -130,7 +125,7 @@ extern JSON_API int msvc_pre1900_c99_snprintf(char* outBuf, size_t size,
 #if defined(__clang__) || (defined(__GNUC__) && (__GNUC__ >= 6))
 #define JSON_USE_INT64_DOUBLE_CONVERSION 1
 #endif
-// Define AMALGMATION macro
+// Define AMALGAMATION macro
 #if !defined(JSON_IS_AMALGAMATION)
 #if JSONCPP_VER_11
 #include "allocator.h"
@@ -140,6 +135,7 @@ extern JSON_API int msvc_pre1900_c99_snprintf(char* outBuf, size_t size,
 #endif // if !defined(JSON_IS_AMALGAMATION)
 
 namespace Json {
+
 typedef int Int;
 typedef unsigned int UInt;
 #if defined(JSON_NO_INT64)

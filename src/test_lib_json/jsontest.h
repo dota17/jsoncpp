@@ -125,7 +125,7 @@ public:
   virtual const char* testName() const = 0;
 
 protected:
-  TestResult* result_{nullptr};
+  TestResult* result_;
 
 private:
   virtual void runTestCase() = 0;
@@ -162,8 +162,8 @@ public:
   static void printUsage(const char* appName);
 
 private: // prevents copy construction and assignment
-  Runner(const Runner& other) = delete;
-  Runner& operator=(const Runner& other) = delete;
+  Runner(const Runner& other) JSONCPP_CTOR_DELETE;
+  Runner& operator=(const Runner& other) JSONCPP_CTOR_DELETE;
 
 private:
   void listTests() const;
@@ -254,8 +254,9 @@ TestResult& checkStringEqual(TestResult& result, const Json::String& expected,
     }                                                                          \
                                                                                \
   public: /* overridden from TestCase */                                       \
-    const char* testName() const override { return #FixtureType "/" #name; }   \
-    void runTestCase() override;                                               \
+    const char* testName() const JSONCPP_OVERRIDE {                            \
+      return #FixtureType "/" #name; }                                         \
+    void runTestCase() JSONCPP_OVERRIDE;                                       \
   };                                                                           \
                                                                                \
   void Test##FixtureType##name::runTestCase()
@@ -279,8 +280,9 @@ TestResult& checkStringEqual(TestResult& result, const Json::String& expected,
     }                                                                          \
                                                                                \
   public: /* overridden from TestCase */                                       \
-    const char* testName() const override { return #FixtureType "/" #name; }   \
-    void runTestCase() override;                                               \
+    const char* testName() const JSONCPP_OVERRIDE {                            \
+      return #FixtureType "/" #name; }                                         \
+    void runTestCase() JSONCPP_OVERRIDE;                                       \
   };                                                                           \
                                                                                \
   static bool test##FixtureType##name##collect =                               \
