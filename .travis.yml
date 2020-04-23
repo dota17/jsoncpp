@@ -77,8 +77,10 @@ matrix:
       env:
          CC="gcc-4.6"
          CXX="g++-4.6"
+         BUILD_TOOL="Unix Makefiles"
          LIB_TYPE=static
          BUILD_TYPE=release
+         DESTDIR=/tmp/cmake_json_cpp
          LANGUAGE_STANDARD="03"
       install:
         - echo ${PATH}
