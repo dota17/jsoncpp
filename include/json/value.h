@@ -6,8 +6,6 @@
 #ifndef JSON_H_INCLUDED
 #define JSON_H_INCLUDED
 
-#include <string.h>
-
 #if !defined(JSON_IS_AMALGAMATION)
 #include "forwards.h"
 #endif // if !defined(JSON_IS_AMALGAMATION)
