@@ -210,7 +210,7 @@ if(JSONCPP_WITH_PKGCONFIG_SUPPORT)
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pkg-config/jsoncpp.pc"
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
 endif()
-
+if (CMAKE_CXX_VERSION EQUAL 11)
 if(JSONCPP_WITH_CMAKE_PACKAGE)
     include(CMakePackageConfigHelpers)
     install(EXPORT jsoncpp
@@ -222,7 +222,14 @@ if(JSONCPP_WITH_CMAKE_PACKAGE)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/jsoncppConfigVersion.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/jsoncpp)
 endif()
+else()
+if(JSONCPP_WITH_CMAKE_PACKAGE)
+    install(EXPORT jsoncpp
+            DESTINATION ${PACKAGE_INSTALL_DIR}/jsoncpp
+            FILE jsoncppConfig.cmake)
 
+endif()
+endif()
 if(JSONCPP_WITH_TESTS)
     enable_testing()
     include(CTest)
