@@ -2735,7 +2735,7 @@ JSONTEST_FIXTURE_LOCAL(ReaderTest, parseString) {
       "* Line 1, Column 3\n"
       "  additional six characters expected to parse unicode surrogate pair.\n"
       "See Line 1, Column 10 for detail.\n");
-  checkParse("[ \"\\ud801\\d1234" ]",
+  checkParse("[ \"\\ud801\\d1234\" ]",
              {{2, 16,
                "expecting another \\u token to begin the "
                "second half of a unicode surrogate pair"}},
