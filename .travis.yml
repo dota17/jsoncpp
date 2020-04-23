@@ -62,7 +62,7 @@ matrix:
       install:
            - source ./.travis_scripts/travis.install.${TRAVIS_OS_NAME}.sh
       script: ./.travis_scripts/meson_builder.sh
-    - name: Linux xenial cmake static release gcc 4.6
+    - name: Linux precise gcc-4.6 cmake-2.8 testing
       os: linux
       dist: precise
       addons:
@@ -89,7 +89,7 @@ matrix:
         - echo ${CXX}
         - ${CXX} --version
       script: ./.travis_scripts/cmake_builder.sh
-    - name: Linux xenial gcc cmake coverage
+    - name: Linux xenial gcc-5.4 cmake-3.12 coverage
       os: linux
       dist: xenial
       addons:
