@@ -244,7 +244,7 @@ private:
  */
 class JSON_API CharReader {
 public:
-  virtual ~CharReader() {};
+  virtual ~CharReader() {}
   /** \brief Read a Value from a <a HREF="http://www.json.org">JSON</a>
    * document. The document must be a UTF-8 encoded string containing the
    * document to read.
@@ -266,7 +266,7 @@ public:
 
   class JSON_API Factory {
   public:
-    virtual ~Factory() {};
+    virtual ~Factory() {}
     /** \brief Allocate a CharReader via operator new().
      * \throw std::exception if something goes wrong (e.g. invalid settings)
      */

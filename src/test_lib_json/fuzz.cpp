@@ -48,6 +48,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
     reader->parse(data_str, data_str + size, &root, JSONCPP_NULL);
   } catch (Json::Exception const&) {
   }
+  delete reader;
   // Whether it succeeded or not doesn't matter.
   return 0;
 }

@@ -1568,31 +1568,19 @@ bool OurReader::decodeNumber(Token& token, Value& decoded) {
   // We assume we can represent the largest and smallest integer types as
   // unsigned integers with separate sign. This is only true if they can fit
   // into an unsigned integer.
-  // static_assert(Value::maxLargesInt <= Value::maxLargesUInt,
-  // "Int must be smaller than Uint");
-  if (Value::maxLargestInt > Value::maxLargestUInt) {
-    std::cerr << "Int must be smaller than UInt" << std::endl;
-  }
+  JSONCPP_STATIC_ASSERT(Value::maxLargestInt <= Value::maxLargestUInt,
+                        "Int must be smaller than Uint");
   // We need to convert minLargestInt into a positive number. The easiest way
   // to do this conversion is to assume our "threshold" value of minLargestInt
   // divided by 10 can fit in maxLargestInt when absolute valued. This should
   // be a safe assumption.
-  // static_assert(Value::minLargestInt <= -Value::maxLargesUInt,
-  // "The absolute value of minLargestInt must ve greater than or"
-  // "equal to maxLargestInt"
-  if (Value::minLargestInt > -Value::maxLargestInt) {
-    std::cerr << "The absolute value of minLargestInt must be greater than or "
-                  "equal to maxLargestInt"
-              << std::endl;
-  }
-  // static_assert(Value::minLargesInt / 10 >= -Value::maxLargesUInt,
-  // "The absolute value of minLargesInt must be only 1 magnitude"
-  // "larger than maxLargest Int"
-  if (Value::minLargestInt / 10 >= -Value::maxLargestInt) {
-    std::cerr << "The absolute value of minLargestInt must be only 1 magnitude "
-                 "larger than maxLargest Int"
-              << std::endl;
-  }
+  JSONCPP_STATIC_ASSERT(Value::minLargestInt <= -Value::maxLargestInt,
+                        "The absolute value of minLargestInt must ve greater than or"
+                        "equal to maxLargestInt");
+  
+  JSONCPP_STATIC_ASSERT(Value::minLargestInt / 10 >= -Value::maxLargestInt,
+                        "The absolute value of minLargestInt must be only 1 magnitude"
+                        "larger than maxLargestInt");
 
   static JSONCPP_CONST Value::LargestUInt positive_threshold =
       Value::maxLargestUInt / 10;

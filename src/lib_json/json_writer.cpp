@@ -83,11 +83,7 @@
 
 namespace Json {
 
-#if __cplusplus >= 201103L || (defined(_CPPLIB_VER) && _CPPLIB_VER >= 520)
 typedef StreamWriter* StreamWriterPtr;
-#else
-typedef StreamWriter* StreamWriterPtr;
-#endif
 
 String valueToString(LargestInt value) {
   UIntToStringBuffer buffer;
@@ -1248,6 +1244,7 @@ String writeString(StreamWriter::Factory const& factory, Value const& root) {
   OStringStream sout;
   StreamWriterPtr const writer(factory.newStreamWriter());
   writer->write(root, &sout);
+  delete writer;
   return sout.str();
 }
 
@@ -1255,6 +1252,7 @@ OStream& operator<<(OStream& sout, Value const& root) {
   StreamWriterBuilder builder;
   StreamWriterPtr const writer(builder.newStreamWriter());
   writer->write(root, &sout);
+  delete writer;
   return sout;
 }
 

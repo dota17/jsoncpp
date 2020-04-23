@@ -169,7 +169,7 @@ class JSONCPP_DEPRECATED("Use StreamWriterBuilder instead") JSON_API FastWriter
     : public Writer {
 public:
   FastWriter();
-  ~FastWriter() JSONCPP_OVERRIDE {};
+  ~FastWriter() JSONCPP_OVERRIDE {}
 
   void enableYAMLCompatibility();
 
@@ -229,7 +229,7 @@ class JSONCPP_DEPRECATED("Use StreamWriterBuilder instead") JSON_API
     StyledWriter : public Writer {
 public:
   StyledWriter();
-  ~StyledWriter() JSONCPP_OVERRIDE {};
+  ~StyledWriter() JSONCPP_OVERRIDE {}
 
 public: // overridden from Writer
   /** \brief Serialize a Value in <a HREF="http://www.json.org">JSON</a> format.
@@ -301,7 +301,7 @@ public:
    * \param indentation Each level will be indented by this amount extra.
    */
   StyledStreamWriter(String indentation = "\t");
-  ~StyledStreamWriter() {};
+  ~StyledStreamWriter() {}
 
 public:
   /** \brief Serialize a Value in <a HREF="http://www.json.org">JSON</a> format.

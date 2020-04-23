@@ -71,28 +71,35 @@ extern JSON_API int msvc_pre1900_c99_snprintf(char* outBuf, size_t size,
 // Storages, and 64 bits integer support is disabled.
 // #define JSON_NO_INT64 1
 
+#if __cplusplus >= 201103L || defined(_MSC_VER)
+#define JSONCPP_OP_EXPLICIT explicit
+#else
+#define JSONCPP_OP_EXPLICIT
+#endif
+
+
 // These Macros are maintained for backwards compatibility of external tools.
 #if (defined(_MSC_VER) && _MSC_VER >= 1900) ||                                 \
     (defined(__GNUC__) && __cplusplus >= 201103L) ||                           \
     (defined(__clang__) && __clang_major__ == 3 && __clang_minor__ > 3 )
 
 #define JSONCPP_VER_11 1
+#else 
+#define JSONCPP_VER_11 0
+#endif
+
+#if JSONCPP_VER_11
 #define JSONCPP_NULL nullptr
 #define JSONCPP_CONST constexpr
-#define JSONCPP_CTOR_DEFAULT = default
 #define JSONCPP_CTOR_DELETE = delete
 #define JSONCPP_NOEXCEPT noexcept
-#define JSONCPP_OP_EXPLICIT explicit
 #define JSONCPP_OVERRIDE override
 #define JSONCPP_MOVE(value) std::move(value)
 #else
-#define JSONCPP_VER_11 0
 #define JSONCPP_NULL NULL
 #define JSONCPP_CONST const
-#define JSONCPP_CTOR_DEFAULT
 #define JSONCPP_CTOR_DELETE
 #define JSONCPP_NOEXCEPT throw()
-#define JSONCPP_OP_EXPLICIT
 #define JSONCPP_OVERRIDE
 #define JSONCPP_MOVE(value) value
 #endif
@@ -148,8 +155,8 @@ typedef unsigned int LargestUInt;
 typedef __int64 Int64;
 typedef unsigned __int64 UInt64;
 #else                 // if defined(_MSC_VER) // Other platforms, use long long
-typedef __int64_t Int64;
-typedef __uint64_t UInt64;
+typedef int64_t Int64;
+typedef uint64_t UInt64;
 #endif                // if defined(_MSC_VER)
 typedef Int64 LargestInt;
 typedef UInt64 LargestUInt;
@@ -172,10 +179,10 @@ using IStream = std::istream;
 using OStream = std::ostream;
 #else
 typedef std::string String;
-typedef std::ostringstream OStringStream;
-typedef std::ostream OStream;
 typedef std::istringstream IStringStream;
+typedef std::ostringstream OStringStream;
 typedef std::istream IStream;
+typedef std::ostream OStream;
 #endif // JSONCPP_VER_11
 } // namespace Json
 

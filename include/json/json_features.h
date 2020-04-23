@@ -39,21 +39,7 @@ public:
   /** \brief Initialize the configuration like JsonConfig::allFeatures;
    */
   Features();
-#if JSONCPP_VER_11
-  /// \c true if comments are allowed. Default: \c true.
-  bool allowComments_{true};
 
-  /// \c true if root must be either an array or an object value. Default: \c
-  /// false.
-  bool strictRoot_{false};
-
-  /// \c true if dropped null placeholders are allowed. Default: \c false.
-  bool allowDroppedNullPlaceholders_{false};
-
-  /// \c true if numeric object key are allowed. Default: \c false.
-  bool allowNumericKeys_{false};
-
-#else
   /// \c true if comments are allowed. Default: \c true.
   bool allowComments_;
 
@@ -66,8 +52,6 @@ public:
 
   /// \c true if numeric object key are allowed. Default: \c false.
   bool allowNumericKeys_;
-
-#endif
 };
 
 } // namespace Json
