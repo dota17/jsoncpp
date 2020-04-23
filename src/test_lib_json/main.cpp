@@ -3845,7 +3845,6 @@ class MemberTemplateIs : public JsonTest::TestCase {};
 
 JSONTEST_FIXTURE_LOCAL(MemberTemplateIs, BehavesSameAsNamedIs) {
   const Json::Value values[] = {true, 142, 40.63, "hello world"};
-  // for (const Json::Value& j : values) {
   for (size_t index = 0; index < sizeof(values) / sizeof(values[0]); index++) {
     const Json::Value& j = values[index];
     JSONTEST_ASSERT_EQUAL(j.is<bool>(), j.isBool());

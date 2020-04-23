@@ -14,7 +14,6 @@
 #include <cstddef>
 #include <cstring>
 #include <sstream>
-#include <iostream>
 #include <utility>
 
 // Provide implementation equivalent of std::snprintf for older _MSC compilers
@@ -48,26 +47,6 @@ int JSON_API msvc_pre1900_c99_snprintf(char* outBuf, size_t size,
 #define JSON_ASSERT_UNREACHABLE assert(false)
 
 namespace Json {
-// #if JSONCPP_VER_11
-#if 0
-template <typename T>
-static std::unique_ptr<T> cloneUnique(const std::unique_ptr<T>& p) {
-  std::unique_ptr<T> r;
-  if (p) {
-    r = std::unique_ptr<T>(new T(*p));
-  }
-  return r;
-}
-// #else
-// template <typename T>
-// static T cloneUnique(const T& p) {
-//   T r; 
-//   if (p) {
-//     r = (T) (new T(p));
-//   }
-//   return r;
-// }
-#endif
 // This is a walkaround to avoid the static initialization of Value::null.
 // kNull must be word-aligned to avoid crashing on ARM.  We use an alignment of
 // 8 (instead of 4) as a bit of future-proofing.
@@ -129,7 +108,6 @@ static inline char* duplicateStringValue(const char* value, size_t length) {
   if (length >= static_cast<size_t>(Value::maxInt))
     length = Value::maxInt - 1;
 
-  //auto newString = static_cast<char*>(malloc(length + 1));
   char* newString = static_cast<char*>(malloc(length + 1));
   if (newString == JSONCPP_NULL) {
     throwRuntimeError("in Json::Value::duplicateStringValue(): "
@@ -151,7 +129,6 @@ static inline char* duplicateAndPrefixStringValue(const char* value,
                       "in Json::Value::duplicateAndPrefixStringValue(): "
                       "length too big for prefixing");
   size_t actualLength = sizeof(length) + length + 1;
-  // auto newString = static_cast<char*>(malloc(actualLength));
   char* newString = static_cast<char*>(malloc(actualLength));
   if (newString == JSONCPP_NULL) {
     throwRuntimeError("in Json::Value::duplicateAndPrefixStringValue(): "
@@ -567,9 +544,7 @@ bool Value::operator<(const Value& other) const {
   }
   case arrayValue:
   case objectValue: {
-    //auto thisSize = value_.map_->size();
     long unsigned int thisSize = value_.map_->size();
-    //auto otherSize = other.value_.map_->size();
     long unsigned int otherSize = other.value_.map_->size();
     if (thisSize != otherSize)
       return thisSize < otherSize;
@@ -1013,7 +988,6 @@ void Value::initBasic(ValueType type, bool allocated) {
   setType(type);
   setIsAllocated(allocated);
   comments_ = NULL;
-  // comments_ = Comments{};
   start_ = 0;
   limit_ = 0;
 }
@@ -1069,8 +1043,6 @@ void Value::releasePayload() {
   default:
     JSON_ASSERT_UNREACHABLE;
   }
-  //  if (comments_)
-  //    delete[] comments_;
 }
 
 void Value::dupMeta(const Value& other) {
@@ -1085,7 +1057,6 @@ void Value::dupMeta(const Value& other) {
   } else {
     comments_ = NULL;
   }
-  // comments_ = other.comments_;
   start_ = other.start_;
   limit_ = other.limit_;
 }

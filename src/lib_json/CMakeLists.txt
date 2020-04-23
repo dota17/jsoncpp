@@ -50,10 +50,10 @@ endif()
 
 
 if(BUILD_SHARED_LIBS)
-    if(CMAKE_VERSION VERSION_GREATER 3.12.0 OR CMAKE_VERSION VERSION_EQUAL 3.12.0)
-        add_compile_definitions(JSON_DLL_BUILD)
-    else()
+    if(CMAKE_VERSION VERSION_LESS 3.12.0)
         add_definitions(-DJSON_DLL_BUILD)
+    else()
+        add_compile_definitions(JSON_DLL_BUILD)
     endif()
 endif()
 

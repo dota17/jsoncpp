@@ -12,7 +12,6 @@
 int main() {
   Json::Value root;
   Json::StreamWriterBuilder builder;
-  // const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
   Json::StreamWriter* writer(builder.newStreamWriter());
 
   root["Name"] = "robin";

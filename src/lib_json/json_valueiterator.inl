@@ -146,8 +146,6 @@ ValueIterator::ValueIterator(const ValueConstIterator& other)
   throwRuntimeError("ConstIterator to Iterator should never be allowed.");
 }
 
-// ValueIterator::ValueIterator(const ValueIterator& other) JSONCPP_CTOR_DEFAULT;
-
 ValueIterator& ValueIterator::operator=(const SelfType& other) {
   copy(other);
   return *this;

@@ -11,9 +11,7 @@
  * 20
  */
 int main() {
-  // const std::string rawJson = R"({"Age": 20, "Name": "colin"})";
   const std::string rawJson = "{\"Age\": 20, \"Name\": \"colin\"}";
-  // const auto rawJsonLength = static_cast<int>(rawJson.length());
   const int rawJsonLength = static_cast<int>(rawJson.length());
   JSONCPP_CONST bool shouldUseOldWay = false;
   JSONCPP_STRING err;
@@ -24,7 +22,6 @@ int main() {
     reader.parse(rawJson, root);
   } else {
     Json::CharReaderBuilder builder;
-    // const std::unique_ptr<Json::CharReader> reader(builder.newCharReader());
     Json::CharReader* reader(builder.newCharReader());
     if (!reader->parse(rawJson.c_str(), rawJson.c_str() + rawJsonLength, &root,
                        &err)) {

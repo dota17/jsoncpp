@@ -156,7 +156,7 @@ typedef UInt64 LargestUInt;
 #define JSON_HAS_INT64
 #endif // if defined(JSON_NO_INT64)
 
-#if JSONCPP_VER_11 // CXX_Stdandard >= C++11
+#if JSONCPP_VER_11
 template <typename T>
 using Allocator =
     typename std::conditional<JSONCPP_USING_SECURE_MEMORY, SecureAllocator<T>,

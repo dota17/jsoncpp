@@ -66,7 +66,7 @@ cmake --version
 echo ${CXX}
 ${CXX} --version
 _COMPILER_NAME=`basename ${CXX}`
-if [ "${BUILD_TYPE}" == "shared" ]; then
+if [ "${BUILD_TYPE}" = "shared" ]; then
   _CMAKE_BUILD_SHARED_LIBS=ON
 else
   _CMAKE_BUILD_SHARED_LIBS=OFF

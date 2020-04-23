@@ -572,7 +572,6 @@ bool Reader::decodeNumber(Token& token, Value& decoded) {
     Char c = *current++;
     if (c < '0' || c > '9')
       return decodeDouble(token, decoded);
-    //auto digit(static_cast<Value::UInt>(c - '0'));
     Value::UInt digit(static_cast<Value::UInt>(c - '0'));
     if (value >= threshold) {
       // We've hit or exceeded the max value divided by 10 (rounded down). If
@@ -895,9 +894,7 @@ OurFeatures OurFeatures::all() { return OurFeatures(); }
 // for implementing JSON reading.
 class OurReader {
 public:
-  //using Char = char;
   typedef char Char;
-  //using Location = const Char*;
   typedef const Char* Location;
   struct StructuredError {
     ptrdiff_t offset_start;
@@ -949,7 +946,6 @@ private:
     Location extra_;
   };
 
-  //using Errors = std::deque<ErrorInfo>;
   typedef std::deque<ErrorInfo> Errors;
 
   bool readToken(Token& token);
@@ -991,7 +987,6 @@ private:
   static String normalizeEOL(Location begin, Location end);
   static bool containsNewLine(Location begin, Location end);
 
-  //using Nodes = std::stack<Value*>;
   typedef std::stack<Value*> Nodes;
 
   Nodes nodes_;
@@ -1608,10 +1603,8 @@ bool OurReader::decodeNumber(Token& token, Value& decoded) {
   // then take the inverse. This assumes that minLargestInt is only a single
   // power of 10 different in magnitude, which we check above. For the last
   // digit, we take the modulus before negating for the same reason.
-  // auto
   static JSONCPP_CONST Value::LargestUInt negative_threshold =
       Value::LargestUInt(-(Value::minLargestInt / 10));
-  // auto 
   static JSONCPP_CONST Value::UInt negative_last_digit =
       Value::UInt(-(Value::minLargestInt % 10));
 
@@ -1626,7 +1619,6 @@ bool OurReader::decodeNumber(Token& token, Value& decoded) {
     if (c < '0' || c > '9')
       return decodeDouble(token, decoded);
 
-    // const auto digit(static_cast<Value::UInt>(c - '0'));
     const Value::UInt digit(static_cast<Value::UInt>(c - '0'));
     if (value >= threshold) {
       // We've hit or exceeded the max value divided by 10 (rounded down). If
@@ -1644,7 +1636,6 @@ bool OurReader::decodeNumber(Token& token, Value& decoded) {
 
   if (isNegative) {
     // We use the same magnitude assumption here, just in case.
-    // const auto last_digit = static_cast<Value::UInt>(value % 10);
     const Value::UInt last_digit = static_cast<Value::UInt>(value % 10);
     decoded = -Value::LargestInt(value / 10) * 10 - last_digit;
   } else if (value <= Value::LargestUInt(Value::maxLargestInt)) {
@@ -1861,7 +1852,6 @@ String OurReader::getLocationLineAndColumn(Location location) const {
 
 String OurReader::getFormattedErrorMessages() const {
   String formattedMessage;
-  //for (const auto& error : errors_) {
   for (Errors::const_iterator itError = errors_.begin();
        itError != errors_.end(); ++ itError) {
     const ErrorInfo& error = *itError;
@@ -1877,7 +1867,6 @@ String OurReader::getFormattedErrorMessages() const {
 
 std::vector<OurReader::StructuredError> OurReader::getStructuredErrors() const {
   std::vector<OurReader::StructuredError> allErrors;
-  //for (const auto& error : errors_) {
   for (Errors::const_iterator itError = errors_.begin();
        itError != errors_.end(); ++ itError) {
     const ErrorInfo& error = *itError;

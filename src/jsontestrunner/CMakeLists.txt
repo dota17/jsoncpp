@@ -1,12 +1,12 @@
-if(CMAKE_VERSION EQUAL 3.12.0)
+if(CMAKE_VERSION VERSION_LESS 3.12.0)
+    set(Python_ADDITIONAL_VERSIONS 3.8)
+    find_package(PythonInterp 3)
+else()
     # The new Python3 module is much more robust than the previous PythonInterp
     find_package(Python3 COMPONENTS Interpreter)
     # Set variables for backwards compatibility with cmake < 3.12.0
     set(PYTHONINTERP_FOUND ${Python3_Interpreter_FOUND})
     set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
-else()
-    set(Python_ADDITIONAL_VERSIONS 3.8)
-    find_package(PythonInterp 3)
 endif()
 
 add_executable(jsontestrunner_exe
@@ -14,10 +14,10 @@ add_executable(jsontestrunner_exe
 )
 
 if(BUILD_SHARED_LIBS)
-    if(CMAKE_VERSION EQUAL 3.12.0)
-        add_compile_definitions( JSON_DLL )
-    else()
+    if(CMAKE_VERSION VERSION_LESS 3.12.0)
         add_definitions(-DJSON_DLL)
+    else()
+        add_compile_definitions( JSON_DLL )
     endif()
 endif()
 target_link_libraries(jsontestrunner_exe jsoncpp_lib)

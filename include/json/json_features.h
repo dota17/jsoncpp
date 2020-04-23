@@ -20,7 +20,6 @@ namespace Json {
  */
 class JSON_API Features {
 public:
-
   /** \brief A configuration that allows all features and assumes all strings
    * are UTF-8.
    * - C & C++ comments are allowed

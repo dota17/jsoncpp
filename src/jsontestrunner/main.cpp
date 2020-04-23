@@ -59,7 +59,6 @@ static Json::String readInputTestFile(const char* path) {
   if (!file)
     return "";
   fseek(file, 0, SEEK_END);
-  //auto const size = ftell(file);
   long const size = ftell(file);
   size_t const usize = static_cast<size_t>(size);
   fseek(file, 0, SEEK_SET);
@@ -114,7 +113,6 @@ static void printValueTree(FILE* fout, Json::Value& value,
     Json::Value::Members members(value.getMemberNames());
     std::sort(members.begin(), members.end());
     Json::String suffix = *(path.end() - 1) == '.' ? "" : ".";
-    //for (auto name : members) {
     for(Json::Value::Members::const_iterator it = members.begin();
         it != members.end(); it++) {
       const Json::String& name = *it;
@@ -144,7 +142,6 @@ static int parseAndSaveValueTree(const Json::String& input,
         features.allowDroppedNullPlaceholders_;
     builder.settings_["allowNumericKeys"] = features.allowNumericKeys_;
 
-    //std::unique_ptr<Json::CharReader> reader(builder.newCharReader());
     Json::CharReader* reader(builder.newCharReader());
     Json::String errors;
     const bool parsingSuccessful =
@@ -155,7 +152,7 @@ static int parseAndSaveValueTree(const Json::String& input,
                 << errors << std::endl;
       return 1;
     }
-
+    delete reader;
     // We may instead check the legacy implementation (to ensure it doesn't
     // randomly get broken).
   } else {
