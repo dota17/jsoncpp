@@ -1400,7 +1400,7 @@ String Value::Comments::get(CommentPlacement slot) const {
 
 void Value::Comments::set(CommentPlacement slot, String comment) {
   // check comments array boundry.
-  if (slot < CommentPlacement::numberOfCommentPlacement) {
+  if (slot < numberOfCommentPlacement) {
     ptr_[slot] = comment;
   }
 }
