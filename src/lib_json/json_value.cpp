@@ -958,7 +958,7 @@ const Value& Value::operator[](int index) const {
 void Value::initBasic(ValueType type, bool allocated) {
   setType(type);
   setIsAllocated(allocated);
-  comments_ = Comments{};
+  comments_ = Comments();
   start_ = 0;
   limit_ = 0;
 }
@@ -1400,23 +1400,25 @@ String Value::Comments::get(CommentPlacement slot) const {
 
 void Value::Comments::set(CommentPlacement slot, String comment) {
   // check comments array boundry.
-  if (slot < CommentPlacement::numberOfCommentPlacement) {
+  if (slot < numberOfCommentPlacement) {
     ptr_[slot] = comment;
   }
 }
 
-void Value::setComment(String comment, CommentPlacement placement) {
-  if (!comment.empty() && (comment.back() == '\n')) {
-    // Always discard trailing newline, to aid indentation.
-    comment.pop_back();
-  }
-  JSON_ASSERT(!comment.empty());
-  JSON_ASSERT_MESSAGE(
-      comment[0] == '\0' || comment[0] == '/',
-      "in Json::Value::setComment(): Comments must start with /");
-  comments_.set(placement, JSONCPP_MOVE(comment));
+void Value::setComment(const char* comment, CommentPlacement placement) {
+  setComment(comment, strlen(comment), placement);
 }
-
+void Value::setComment(const char* comment, size_t len, CommentPlacement placement) {
+  if ((len > 0) && (comment[len - 1] == '\n')) {
+    // Always discard trailing newline, to aid indentation.
+    len -= 1;
+  }
+  comments_.set(placement, String(comment, len));
+}
+/// Comments must be //... or /* ... */
+void Value::setComment(const String& comment, CommentPlacement placement) {
+  setComment(comment.c_str(), comment.length(), placement);
+}
 bool Value::hasComment(CommentPlacement placement) const {
   return comments_.has(placement);
 }

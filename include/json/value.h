@@ -29,6 +29,12 @@
 // Support for '= delete' with template declarations was a late addition
 // to the c++11 standard and is rejected by clang 3.8 and Apple clang 8.2
 // even though these declare themselves to be c++11 compilers.
+#if JSONCPP_VER_11
+#else
+#define JSONCPP_TEMPLATE_DELETE
+#include <string.h>
+#endif
+
 #if !defined(JSONCPP_TEMPLATE_DELETE)
 #if defined(__clang__) && defined(__apple_build_version__)
 #if __apple_build_version__ <= 8000042
@@ -577,15 +583,11 @@ public:
 
   /// \deprecated Always pass len.
   JSONCPP_DEPRECATED("Use setComment(String const&) instead.")
-  void setComment(const char* comment, CommentPlacement placement) {
-    setComment(String(comment, strlen(comment)), placement);
-  }
+  void setComment(const char* comment, CommentPlacement placement);
   /// Comments must be //... or /* ... */
-  void setComment(const char* comment, size_t len, CommentPlacement placement) {
-    setComment(String(comment, len), placement);
-  }
+  void setComment(const char* comment, size_t len, CommentPlacement placement);
   /// Comments must be //... or /* ... */
-  void setComment(String comment, CommentPlacement placement);
+  void setComment(const String& comment, CommentPlacement placement);
   bool hasComment(CommentPlacement placement) const;
   /// Include delimiters and embedded newlines.
   String getComment(CommentPlacement placement) const;
