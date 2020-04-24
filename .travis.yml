@@ -20,15 +20,16 @@ matrix:
     - name: Mac clang meson static release testing
       os: osx
       osx_image: xcode11
+      compiler: clang
       addons:
         apt:
           sources:
           - ubuntu-toolchain-r-test
           - llvm-toolchain-xenial-8
           packages:
-          - meson
+          - clang-format-8
           - clang-8
-      compiler: clang
+          - valgrind
       env:
          CXX="clang++"
          CC="clang"
