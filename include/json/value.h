@@ -29,12 +29,6 @@
 // Support for '= delete' with template declarations was a late addition
 // to the c++11 standard and is rejected by clang 3.8 and Apple clang 8.2
 // even though these declare themselves to be c++11 compilers.
-#if JSONCPP_VER_11
-#else
-#define JSONCPP_TEMPLATE_DELETE
-#include <string.h>
-#endif
-
 #if !defined(JSONCPP_TEMPLATE_DELETE)
 #if defined(__clang__) && defined(__apple_build_version__)
 #if __apple_build_version__ <= 8000042
@@ -48,6 +42,12 @@
 #if !defined(JSONCPP_TEMPLATE_DELETE)
 #define JSONCPP_TEMPLATE_DELETE = delete
 #endif
+#endif
+
+#if JSONCPP_VER_11
+#else
+#define JSONCPP_TEMPLATE_DELETE
+#include <string.h>
 #endif
 
 #include <exception>

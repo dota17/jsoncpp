@@ -1414,7 +1414,6 @@ void Value::setComment(const char* comment, size_t len,
   }
   comments_.set(placement, String(comment, len));
 }
-/// Comments must be //... or /* ... */
 void Value::setComment(const String& comment, CommentPlacement placement) {
   setComment(comment.c_str(), comment.length(), placement);
 }

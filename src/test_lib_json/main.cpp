@@ -2651,16 +2651,17 @@ JSONTEST_FIXTURE_LOCAL(StreamWriterTest, unicode) {
                   "{\n\t\"test\" : "
                   "\"\\t\\n\\ud806\\udca1=\\u0133\\ud82c\\udd1b\\uff67\"\n}");
 }
-#if JSONCPP_VER_11
+
 struct ReaderTest : JsonTest::TestCase {
   void setStrictMode() {
-    reader = std::unique_ptr<Json::Reader>(
-        new Json::Reader(Json::Features{}.strictMode()));
+    reader = new Json::Reader(Json::Features{}.strictMode());
   }
 
   void setFeatures(Json::Features& features) {
-    reader = std::unique_ptr<Json::Reader>(new Json::Reader(features));
+    reader = new Json::Reader(features);
   }
+
+  ~ReaderTest() { delete reader; }
 
   void checkStructuredErrors(
       const std::vector<Json::Reader::StructuredError>& actual,
@@ -2695,7 +2696,7 @@ struct ReaderTest : JsonTest::TestCase {
     JSONTEST_ASSERT_EQUAL(formatted, reader->getFormattedErrorMessages());
   }
 
-  std::unique_ptr<Json::Reader> reader{new Json::Reader()};
+  Json::Reader* reader{new Json::Reader()};
   Json::Value root;
 };
 
@@ -2870,7 +2871,7 @@ JSONTEST_FIXTURE_LOCAL(ReaderTest, allowNumericKeysTest) {
   setFeatures(features);
   checkParse("{ 123 : \"abc\" }");
 }
-#endif // JSONCPP_VER_11
+
 struct CharReaderTest : JsonTest::TestCase {};
 
 JSONTEST_FIXTURE_LOCAL(CharReaderTest, parseWithNoErrors) {
@@ -2937,7 +2938,7 @@ JSONTEST_FIXTURE_LOCAL(CharReaderTest, parseString) {
     JSONTEST_ASSERT_EQUAL(u8"\u8A2a", root[0].asString()); // "訪"
 #else
     JSONTEST_ASSERT_EQUAL("\u8A2a", root[0].asString()); // "訪"
-#endif
+#endif // JSONCPP_VER_11
   }
   {
     char const doc[] = "[ \"\\uD801\" ]";
