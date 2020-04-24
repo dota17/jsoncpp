@@ -48,15 +48,6 @@ int JSON_API msvc_pre1900_c99_snprintf(char* outBuf, size_t size,
 
 namespace Json {
 
-template <typename T>
-static std::unique_ptr<T> cloneUnique(const std::unique_ptr<T>& p) {
-  std::unique_ptr<T> r;
-  if (p) {
-    r = std::unique_ptr<T>(new T(*p));
-  }
-  return r;
-}
-
 // This is a walkaround to avoid the static initialization of Value::null.
 // kNull must be word-aligned to avoid crashing on ARM.  We use an alignment of
 // 8 (instead of 4) as a bit of future-proofing.
@@ -1388,38 +1379,29 @@ bool Value::isArray() const { return type() == arrayValue; }
 
 bool Value::isObject() const { return type() == objectValue; }
 
-Value::Comments::Comments(const Comments& that)
-    : ptr_{cloneUnique(that.ptr_)} {}
-#if JSONCPP_VER_11
-Value::Comments::Comments(Comments&& that) : ptr_{std::move(that.ptr_)} {}
-#endif
+Value::Comments::Comments(const Comments& that) {
+  for (size_t i = 0; i < numberOfCommentPlacement; i++) {
+    ptr_[i] = that.ptr_[i];
+  }
+}
 Value::Comments& Value::Comments::operator=(const Comments& that) {
-  ptr_ = cloneUnique(that.ptr_);
+  for (size_t i = 0; i < numberOfCommentPlacement; i++) {
+    ptr_[i] = that.ptr_[i];
+  }
   return *this;
 }
-#if JSONCPP_VER_11
-Value::Comments& Value::Comments::operator=(Comments&& that) {
-  ptr_ = std::move(that.ptr_);
-  return *this;
-}
-#endif
 bool Value::Comments::has(CommentPlacement slot) const {
-  return ptr_ && !(*ptr_)[slot].empty();
+  return !ptr_[slot].empty();
 }
 
 String Value::Comments::get(CommentPlacement slot) const {
-  if (!ptr_)
-    return NULL;
-  return (*ptr_)[slot];
+  return ptr_[slot];
 }
 
 void Value::Comments::set(CommentPlacement slot, String comment) {
-  if (!ptr_) {
-    ptr_ = std::unique_ptr<Array>(new Array());
-  }
   // check comments array boundry.
   if (slot < CommentPlacement::numberOfCommentPlacement) {
-    (*ptr_)[slot] = JSONCPP_MOVE(comment);
+    ptr_[slot] = comment;
   }
 }
 

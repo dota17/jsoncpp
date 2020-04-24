@@ -44,10 +44,8 @@
 #endif
 #endif
 
-#include <array>
 #include <exception>
 #include <map>
-#include <memory>
 #include <string>
 #include <vector>
 
@@ -649,18 +647,15 @@ private:
 
   class Comments {
   public:
-    Comments() = default;
+    Comments() {}
     Comments(const Comments& that);
-    Comments(Comments&& that);
     Comments& operator=(const Comments& that);
-    Comments& operator=(Comments&& that);
     bool has(CommentPlacement slot) const;
     String get(CommentPlacement slot) const;
     void set(CommentPlacement slot, String s);
 
   private:
-    using Array = std::array<String, numberOfCommentPlacement>;
-    std::unique_ptr<Array> ptr_;
+    String ptr_[numberOfCommentPlacement];
   };
   Comments comments_;
 
