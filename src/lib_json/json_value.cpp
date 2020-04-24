@@ -1394,9 +1394,7 @@ bool Value::Comments::has(CommentPlacement slot) const {
   return !ptr_[slot].empty();
 }
 
-String Value::Comments::get(CommentPlacement slot) const {
-  return ptr_[slot];
-}
+String Value::Comments::get(CommentPlacement slot) const { return ptr_[slot]; }
 
 void Value::Comments::set(CommentPlacement slot, String comment) {
   // check comments array boundry.
@@ -1408,7 +1406,8 @@ void Value::Comments::set(CommentPlacement slot, String comment) {
 void Value::setComment(const char* comment, CommentPlacement placement) {
   setComment(comment, strlen(comment), placement);
 }
-void Value::setComment(const char* comment, size_t len, CommentPlacement placement) {
+void Value::setComment(const char* comment, size_t len,
+                       CommentPlacement placement) {
   if ((len > 0) && (comment[len - 1] == '\n')) {
     // Always discard trailing newline, to aid indentation.
     len -= 1;

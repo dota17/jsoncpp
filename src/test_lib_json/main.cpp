@@ -2933,11 +2933,11 @@ JSONTEST_FIXTURE_LOCAL(CharReaderTest, parseString) {
     bool ok = reader->parse(doc, doc + std::strlen(doc), &root, &errs);
     JSONTEST_ASSERT(ok);
     JSONTEST_ASSERT(errs.empty());
-    #if JSONCPP_VER_11
+#if JSONCPP_VER_11
     JSONTEST_ASSERT_EQUAL(u8"\u8A2a", root[0].asString()); // "訪"
-    #else
+#else
     JSONTEST_ASSERT_EQUAL("\u8A2a", root[0].asString()); // "訪"
-    #endif
+#endif
   }
   {
     char const doc[] = "[ \"\\uD801\" ]";
