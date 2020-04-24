@@ -1571,7 +1571,7 @@ bool OurReader::decodeNumber(Token& token, Value& decoded) {
   // We assume we can represent the largest and smallest integer types as
   // unsigned integers with separate sign. This is only true if they can fit
   // into an unsigned integer.
-  JSONCPP_STATIC_ASSERT(Value::maxLargestInt <= Value::maxLargestUInt,
+  JSONCPP_STATIC_ASSERT(LargestUInt(Value::maxLargestInt) <= Value::maxLargestUInt,
                         "Int must be smaller than Uint");
   // We need to convert minLargestInt into a positive number. The easiest way
   // to do this conversion is to assume our "threshold" value of minLargestInt
