@@ -52,7 +52,7 @@ matrix:
       install:
         - source ./.travis_scripts/travis.install.${TRAVIS_OS_NAME}.sh
       script: ./.travis_scripts/meson_builder.sh
-    - name: Linux xenial gcc-4.6 meson static release testing
+    - name: Linux xenial gcc-4.6 meson static release with C++03 testing
       os: linux
       dist: xenial
       addons:
@@ -75,6 +75,30 @@ matrix:
       install:
         - source ./.travis_scripts/travis.install.${TRAVIS_OS_NAME}.sh
       script: ./.travis_scripts/meson_builder.sh
+    - name: Linux xenial gcc-4.6 meson static release with C++98 testing
+      os: linux
+      dist: xenial
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.6
+            - valgrind
+      env:
+        MATRIX_EVAL="CC=gcc-4.6 CXX=g++-4.6"
+        CC=gcc-4.6
+        CXX=g++-4.6
+        LIB_TYPE=static
+        BUILD_TYPE=release
+        LANGUAGE_STANDARD="98"
+      # before_install and install steps only needed for linux meson builds
+      before_install:
+        - source ./.travis_scripts/travis.before_install.${TRAVIS_OS_NAME}.sh
+      install:
+        - source ./.travis_scripts/travis.install.${TRAVIS_OS_NAME}.sh
+      script: ./.travis_scripts/meson_builder.sh
+
     - name: Linux xenial gcc-5.4 cmake-3.12 coverage
       os: linux
       dist: xenial
@@ -93,7 +117,7 @@ matrix:
       script: ./.travis_scripts/cmake_builder.sh
       after_success:
         - coveralls --include src/lib_json --include include
-    - name: Linux xenial gcc-4.6 cmake-3.12 C++03 testing
+    - name: Linux xenial gcc-4.6 cmake-3.12 with C++03 testing
       os: linux
       dist: xenial
       addons:
