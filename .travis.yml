@@ -81,7 +81,7 @@ matrix:
           - g++-4.6
           - valgrind
       env:
-         MATRIX_EVAL="CC=gcc-4.6 CXX=g++4.6"
+         MATRIX_EVAL="CC=gcc-4.6 CXX=g++-4.6"
          CC=gcc-4.6
          CXX=g++-4.6
          BUILD_TOOL="Unix Makefiles"
@@ -89,6 +89,9 @@ matrix:
          BUILD_TYPE=release
          DESTDIR=/tmp/cmake_json_cpp
          LANGUAGE_STANDARD="03"
+      before_install:
+        - sudo apt-get update
+        - sudo apt-get install python3
       script: ./.travis_scripts/cmake_builder.sh
 notifications:
   email: false
