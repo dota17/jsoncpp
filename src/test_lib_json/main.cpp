@@ -2700,34 +2700,34 @@ struct ReaderTest : JsonTest::TestCase {
 };
 
 JSONTEST_FIXTURE_LOCAL(ReaderTest, parseWithNoErrors) {
-  checkParse(R"({ "property" : "value" })");
+  checkParse("{ \"property\" : \"value\" }");
 }
 
 JSONTEST_FIXTURE_LOCAL(ReaderTest, parseObject) {
-  checkParse(R"({"property"})",
+  checkParse("{\"property\"}",
              {{11, 12, "Missing ':' after object member name"}},
              "* Line 1, Column 12\n  Missing ':' after object member name\n");
   checkParse(
-      R"({"property" : "value" )",
+      "{\"property\" : \"value\" ",
       {{22, 22, "Missing ',' or '}' in object declaration"}},
       "* Line 1, Column 23\n  Missing ',' or '}' in object declaration\n");
-  checkParse(R"({"property" : "value", )",
+  checkParse("{\"property\" : \"value\", ",
              {{23, 23, "Missing '}' or object member name"}},
              "* Line 1, Column 24\n  Missing '}' or object member name\n");
 }
 
 JSONTEST_FIXTURE_LOCAL(ReaderTest, parseArray) {
   checkParse(
-      R"([ "value" )", {{10, 10, "Missing ',' or ']' in array declaration"}},
+      "[ \"value\" ", {{10, 10, "Missing ',' or ']' in array declaration"}},
       "* Line 1, Column 11\n  Missing ',' or ']' in array declaration\n");
   checkParse(
-      R"([ "value1" "value2" ] )",
+      "[ \"value1\" \"value2\" ] ",
       {{11, 19, "Missing ',' or ']' in array declaration"}},
       "* Line 1, Column 12\n  Missing ',' or ']' in array declaration\n");
 }
 
 JSONTEST_FIXTURE_LOCAL(ReaderTest, parseString) {
-  checkParse(R"([ "\u8a2a" ])");
+  checkParse("[ \"\u8a2a\" ]");
   checkParse(
       "[ \"\\ud801\" ]",
       {{2, 10,
@@ -2744,7 +2744,7 @@ JSONTEST_FIXTURE_LOCAL(ReaderTest, parseString) {
              "  expecting another \\u token to begin the "
              "second half of a unicode surrogate pair\n"
              "See Line 1, Column 12 for detail.\n");
-  checkParse(R"([ "\ua3t@" ])",
+  checkParse("[ \"\\ua3t@\" ]",
              {{2, 10,
                "Bad unicode escape sequence in string: "
                "hexadecimal digit expected."}},
@@ -2753,7 +2753,7 @@ JSONTEST_FIXTURE_LOCAL(ReaderTest, parseString) {
              "hexadecimal digit expected.\n"
              "See Line 1, Column 9 for detail.\n");
   checkParse(
-      R"([ "\ua3t" ])",
+      "[ \"\\ua3t\" ]",
       {{2, 9, "Bad unicode escape sequence in string: four digits expected."}},
       "* Line 1, Column 3\n"
       "  Bad unicode escape sequence in string: four digits expected.\n"
@@ -2762,29 +2762,29 @@ JSONTEST_FIXTURE_LOCAL(ReaderTest, parseString) {
 
 JSONTEST_FIXTURE_LOCAL(ReaderTest, parseComment) {
   checkParse(
-      R"({ /*commentBeforeValue*/ "property" : "value" }//commentAfterValue)"
+      "{ /*commentBeforeValue*/ \"property\" : \"value\" }//commentAfterValue"
       "\n");
   checkParse(" true //comment1\n//comment2\r//comment3\r\n");
 }
 
 JSONTEST_FIXTURE_LOCAL(ReaderTest, streamParseWithNoErrors) {
-  std::string styled = R"({ "property" : "value" })";
+  std::string styled = "{ \"property\" : \"value\" }";
   std::istringstream iss(styled);
   checkParse(iss);
 }
 
 JSONTEST_FIXTURE_LOCAL(ReaderTest, parseWithNoErrorsTestingOffsets) {
-  checkParse(R"({)"
-             R"( "property" : ["value", "value2"],)"
-             R"( "obj" : { "nested" : -6.2e+15, "bool" : true},)"
-             R"( "null" : null,)"
-             R"( "false" : false)"
-             R"( })");
+  checkParse("{"
+             " \"property\" : [\"value\", \"value2\"],"
+             " \"obj\" : { \"nested\" : -6.2e+15, \"bool\" : true},"
+             " \"null\" : null,"
+             " \"false\" : false"
+             "}");
   auto checkOffsets = [&](const Json::Value& v, int start, int limit) {
     JSONTEST_ASSERT_EQUAL(start, v.getOffsetStart());
     JSONTEST_ASSERT_EQUAL(limit, v.getOffsetLimit());
   };
-  checkOffsets(root, 0, 115);
+  checkOffsets(root, 0, 114);
   checkOffsets(root["property"], 15, 34);
   checkOffsets(root["property"][0], 16, 23);
   checkOffsets(root["property"][1], 25, 33);
@@ -2796,7 +2796,7 @@ JSONTEST_FIXTURE_LOCAL(ReaderTest, parseWithNoErrorsTestingOffsets) {
 }
 
 JSONTEST_FIXTURE_LOCAL(ReaderTest, parseWithOneError) {
-  checkParse(R"({ "property" :: "value" })",
+  checkParse("{ \"property\" :: \"value\" }",
              {{14, 15, "Syntax error: value, object or array expected."}},
              "* Line 1, Column 15\n  Syntax error: value, object or array "
              "expected.\n");
@@ -2806,11 +2806,11 @@ JSONTEST_FIXTURE_LOCAL(ReaderTest, parseWithOneError) {
 }
 
 JSONTEST_FIXTURE_LOCAL(ReaderTest, parseSpecialFloat) {
-  checkParse(R"({ "a" : Infi })",
+  checkParse("{ \"a\" : Infi }",
              {{8, 9, "Syntax error: value, object or array expected."}},
              "* Line 1, Column 9\n  Syntax error: value, object or array "
              "expected.\n");
-  checkParse(R"({ "a" : Infiniaa })",
+  checkParse("{ \"a\" : Infiniaa }",
              {{8, 9, "Syntax error: value, object or array expected."}},
              "* Line 1, Column 9\n  Syntax error: value, object or array "
              "expected.\n");
@@ -2827,16 +2827,16 @@ JSONTEST_FIXTURE_LOCAL(ReaderTest, strictModeParseNumber) {
 }
 
 JSONTEST_FIXTURE_LOCAL(ReaderTest, parseChineseWithOneError) {
-  checkParse(R"({ "pr)"
+  checkParse("{ \"pr"
              "\u4f50\u85e4" // 佐藤
-             R"(erty" :: "value" })",
+             "erty\" :: \"value\" }",
              {{18, 19, "Syntax error: value, object or array expected."}},
              "* Line 1, Column 19\n  Syntax error: value, object or array "
              "expected.\n");
 }
 
 JSONTEST_FIXTURE_LOCAL(ReaderTest, parseWithDetailError) {
-  checkParse(R"({ "property" : "v\alue" })",
+  checkParse("{ \"property\" : \"v\\alue\" }",
              {{15, 23, "Bad escape sequence in string"}},
              "* Line 1, Column 16\n"
              "  Bad escape sequence in string\n"
@@ -2844,7 +2844,7 @@ JSONTEST_FIXTURE_LOCAL(ReaderTest, parseWithDetailError) {
 }
 
 JSONTEST_FIXTURE_LOCAL(ReaderTest, pushErrorTest) {
-  checkParse(R"({ "AUTHOR" : 123 })");
+  checkParse("{ \"AUTHOR\" : 123 }");
   if (!root["AUTHOR"].isString()) {
     JSONTEST_ASSERT(
         reader->pushError(root["AUTHOR"], "AUTHOR must be a string"));
@@ -2853,7 +2853,7 @@ JSONTEST_FIXTURE_LOCAL(ReaderTest, pushErrorTest) {
                                "* Line 1, Column 14\n"
                                "  AUTHOR must be a string\n");
 
-  checkParse(R"({ "AUTHOR" : 123 })");
+  checkParse("{ \"AUTHOR\" : 123 }");
   if (!root["AUTHOR"].isString()) {
     JSONTEST_ASSERT(reader->pushError(root["AUTHOR"], "AUTHOR must be a string",
                                       root["AUTHOR"]));
@@ -2868,7 +2868,7 @@ JSONTEST_FIXTURE_LOCAL(ReaderTest, allowNumericKeysTest) {
   Json::Features features;
   features.allowNumericKeys_ = true;
   setFeatures(features);
-  checkParse(R"({ 123 : "abc" })");
+  checkParse("{ 123 : \"abc\" }");
 }
 #endif // JSONCPP_VER_11
 struct CharReaderTest : JsonTest::TestCase {};
@@ -3341,9 +3341,9 @@ JSONTEST_FIXTURE_LOCAL(CharReaderAllowDropNullTest, issue178) {
     ValueCheck onRoot;
   };
   const TestSpec specs[] = {
-      {__LINE__, R"({"a":,"b":true})", 2, objGetAnd("a", checkEq(nullValue))},
-      {__LINE__, R"({"a":,"b":true})", 2, objGetAnd("a", checkEq(nullValue))},
-      {__LINE__, R"({"a":})", 1, objGetAnd("a", checkEq(nullValue))},
+      {__LINE__, "{\"a\":,\"b\":true}", 2, objGetAnd("a", checkEq(nullValue))},
+      {__LINE__, "{\"a\":,\"b\":true}", 2, objGetAnd("a", checkEq(nullValue))},
+      {__LINE__, "{\"a\":}", 1, objGetAnd("a", checkEq(nullValue))},
       {__LINE__, "[]", 0, checkEq(emptyArray)},
       {__LINE__, "[null]", 1, JSONCPP_NULL},
       {__LINE__, "[,]", 2, JSONCPP_NULL},
