@@ -1,6 +1,6 @@
 #include "json/json.h"
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
 /** \brief Write a Value object to a string.
  * Example Usage:
  * $g++ stringWrite.cpp -ljsoncpp -std=c++11 -o stringWrite

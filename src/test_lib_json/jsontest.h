@@ -254,7 +254,8 @@ TestResult& checkStringEqual(TestResult& result, const Json::String& expected,
                                                                                \
   public: /* overridden from TestCase */                                       \
     const char* testName() const JSONCPP_OVERRIDE {                            \
-      return #FixtureType "/" #name; }                                         \
+      return #FixtureType "/" #name;                                           \
+    }                                                                          \
     void runTestCase() JSONCPP_OVERRIDE;                                       \
   };                                                                           \
                                                                                \
@@ -280,7 +281,8 @@ TestResult& checkStringEqual(TestResult& result, const Json::String& expected,
                                                                                \
   public: /* overridden from TestCase */                                       \
     const char* testName() const JSONCPP_OVERRIDE {                            \
-      return #FixtureType "/" #name; }                                         \
+      return #FixtureType "/" #name;                                           \
+    }                                                                          \
     void runTestCase() JSONCPP_OVERRIDE;                                       \
   };                                                                           \
                                                                                \

@@ -47,6 +47,16 @@ int JSON_API msvc_pre1900_c99_snprintf(char* outBuf, size_t size,
 #define JSON_ASSERT_UNREACHABLE assert(false)
 
 namespace Json {
+
+template <typename T>
+static std::unique_ptr<T> cloneUnique(const std::unique_ptr<T>& p) {
+  std::unique_ptr<T> r;
+  if (p) {
+    r = std::unique_ptr<T>(new T(*p));
+  }
+  return r;
+}
+
 // This is a walkaround to avoid the static initialization of Value::null.
 // kNull must be word-aligned to avoid crashing on ARM.  We use an alignment of
 // 8 (instead of 4) as a bit of future-proofing.
@@ -209,34 +219,6 @@ JSONCPP_NORETURN void throwLogicError(String const& msg) { abort(); }
 // //////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////
-// class Value::CommentInfo
-// //////////////////////////////////////////////////////////////////
-// //////////////////////////////////////////////////////////////////
-// //////////////////////////////////////////////////////////////////
-
-Value::CommentInfo::CommentInfo() : comment_(JSONCPP_NULL) {}
-
-Value::CommentInfo::~CommentInfo() {
-  if (comment_)
-    releaseStringValue(comment_, 0u);
-}
-
-void Value::CommentInfo::setComment(const char* text, size_t len) {
-  if (comment_) {
-    releaseStringValue(comment_, 0u);
-    comment_ = JSONCPP_NULL;
-  }
-  JSON_ASSERT(text != JSONCPP_NULL);
-  JSON_ASSERT_MESSAGE(
-      text[0] == '\0' || text[0] == '/',
-      "in Json::Value::setComment(): Comments must start with /");
-
-  comment_ = duplicateStringValue(text, len);
-}
-
-// //////////////////////////////////////////////////////////////////
-// //////////////////////////////////////////////////////////////////
-// //////////////////////////////////////////////////////////////////
 // class Value::CZString
 // //////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////
@@ -257,10 +239,10 @@ Value::CZString::CZString(char const* str, unsigned length,
 }
 
 Value::CZString::CZString(const CZString& other) {
-  cstr_ = 
+  cstr_ =
       (other.storage_.policy_ != noDuplication && other.cstr_ != JSONCPP_NULL
-               ? duplicateStringValue(other.cstr_, other.storage_.length_)
-               : other.cstr_);
+           ? duplicateStringValue(other.cstr_, other.storage_.length_)
+           : other.cstr_);
   storage_.policy_ =
       static_cast<unsigned>(
           other.cstr_
@@ -455,7 +437,6 @@ Value::Value(Value&& other) {
 
 Value::~Value() {
   releasePayload();
-  delete[] comments_;
   value_.uint_ = 0;
 }
 
@@ -489,7 +470,6 @@ void Value::swap(Value& other) {
 
 void Value::copy(const Value& other) {
   copyPayload(other);
-  delete[] comments_;
   dupMeta(other);
 }
 
@@ -987,7 +967,7 @@ const Value& Value::operator[](int index) const {
 void Value::initBasic(ValueType type, bool allocated) {
   setType(type);
   setIsAllocated(allocated);
-  comments_ = NULL;
+  comments_ = Comments{};
   start_ = 0;
   limit_ = 0;
 }
@@ -1046,17 +1026,7 @@ void Value::releasePayload() {
 }
 
 void Value::dupMeta(const Value& other) {
-  if (other.comments_) {
-    comments_ = new CommentInfo[numberOfCommentPlacement];
-    for (int comment = 0; comment < numberOfCommentPlacement; ++ comment) {
-      const CommentInfo& otherComment = other.comments_[comment];
-      if(otherComment.comment_)
-        comments_[comment].setComment(otherComment.comment_,
-                                      strlen(otherComment.comment_));
-    }
-  } else {
-    comments_ = NULL;
-  }
+  comments_ = other.comments_;
   start_ = other.start_;
   limit_ = other.limit_;
 }
@@ -1192,7 +1162,7 @@ bool Value::insert(ArrayIndex index, const Value& newValue) {
   if (index > length) {
     return false;
   }
-  for (ArrayIndex i = length; i > index; i --) {
+  for (ArrayIndex i = length; i > index; i--) {
     (*this)[i] = (*this)[i - 1];
   }
   (*this)[index] = newValue;
@@ -1418,33 +1388,6 @@ bool Value::isArray() const { return type() == arrayValue; }
 
 bool Value::isObject() const { return type() == objectValue; }
 
-
-void Value::setComment(const char* comment,
-                       size_t len,
-                       CommentPlacement placement){
-  if (!comments_)
-    comments_ = new CommentInfo[numberOfCommentPlacement];
-  if ((len > 0) && (comment[len - 1] == '\n')) {
-    len -= 1;
-  }
-  comments_[placement].setComment(comment, len);
-}
-
-void Value::setComment(const char* comment, CommentPlacement placement) {
-  setComment(comment, strlen(comment), placement);
-}
-void Value::setComment(const String& comment, CommentPlacement placement) {
-  setComment(comment.c_str(), comment.length(), placement);
-}
-bool Value::hasComment(CommentPlacement placement) const {
-  return comments_ != NULL && comments_[placement].comment_ != NULL;
-}
-String Value::getComment(CommentPlacement placement) const {
-  if (hasComment(placement))
-    return comments_[placement].comment_;
-  return "";
-}
-#if 0
 Value::Comments::Comments(const Comments& that)
     : ptr_{cloneUnique(that.ptr_)} {}
 #if JSONCPP_VER_11
@@ -1499,7 +1442,6 @@ bool Value::hasComment(CommentPlacement placement) const {
 String Value::getComment(CommentPlacement placement) const {
   return comments_.get(placement);
 }
-#endif
 
 void Value::setOffsetStart(ptrdiff_t start) { start_ = start; }
 
@@ -1581,7 +1523,7 @@ PathArgument::PathArgument(ArrayIndex index)
 
 PathArgument::PathArgument(const char* key) : key_(key), kind_(kindKey) {}
 
-PathArgument::PathArgument(String key) 
+PathArgument::PathArgument(String key)
     : key_(JSONCPP_MOVE(key)), kind_(kindKey) {}
 
 // class Path
@@ -1650,7 +1592,7 @@ void Path::invalidPath(const String& /*path*/, int /*location*/) {
 const Value& Path::resolve(const Value& root) const {
   const Value* node = &root;
   for (Args::const_iterator itArg = args_.begin(); itArg != args_.end();
-       ++ itArg) {
+       ++itArg) {
     const PathArgument& arg = *itArg;
     if (arg.kind_ == PathArgument::kindIndex) {
       if (!node->isArray() || !node->isValidIndex(arg.index_)) {
@@ -1677,7 +1619,7 @@ const Value& Path::resolve(const Value& root) const {
 Value Path::resolve(const Value& root, const Value& defaultValue) const {
   const Value* node = &root;
   for (Args::const_iterator itArg = args_.begin(); itArg != args_.end();
-       ++ itArg) {
+       ++itArg) {
     const PathArgument& arg = *itArg;
     if (arg.kind_ == PathArgument::kindIndex) {
       if (!node->isArray() || !node->isValidIndex(arg.index_))
@@ -1697,7 +1639,7 @@ Value Path::resolve(const Value& root, const Value& defaultValue) const {
 Value& Path::make(Value& root) const {
   Value* node = &root;
   for (Args::const_iterator itArg = args_.begin(); itArg != args_.end();
-       ++ itArg) {
+       ++itArg) {
     const PathArgument& arg = *itArg;
     if (arg.kind_ == PathArgument::kindIndex) {
       if (!node->isArray()) {

@@ -44,8 +44,10 @@
 #endif
 #endif
 
+#include <array>
 #include <exception>
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -226,7 +228,8 @@ public:
   static JSONCPP_CONST LargestInt minLargestInt =
       LargestInt(~(LargestUInt(-1) / 2));
   /// Maximum signed integer value that can be stored in a Json::Value.
-  static JSONCPP_CONST LargestInt maxLargestInt = LargestInt(LargestUInt(-1) / 2);
+  static JSONCPP_CONST LargestInt maxLargestInt =
+      LargestInt(LargestUInt(-1) / 2);
   /// Maximum unsigned integer value that can be stored in a Json::Value.
   static JSONCPP_CONST LargestUInt maxLargestUInt = LargestUInt(-1);
 
@@ -576,11 +579,15 @@ public:
 
   /// \deprecated Always pass len.
   JSONCPP_DEPRECATED("Use setComment(String const&) instead.")
-  void setComment(const char* comment, CommentPlacement placement);
+  void setComment(const char* comment, CommentPlacement placement) {
+    setComment(String(comment, strlen(comment)), placement);
+  }
   /// Comments must be //... or /* ... */
-  void setComment(const char* comment, size_t len, CommentPlacement placement);
+  void setComment(const char* comment, size_t len, CommentPlacement placement) {
+    setComment(String(comment, len), placement);
+  }
   /// Comments must be //... or /* ... */
-  void setComment(const String& comment, CommentPlacement placement);
+  void setComment(String comment, CommentPlacement placement);
   bool hasComment(CommentPlacement placement) const;
   /// Include delimiters and embedded newlines.
   String getComment(CommentPlacement placement) const;
@@ -614,15 +621,6 @@ private:
 
   Value& resolveReference(const char* key);
   Value& resolveReference(const char* key, const char* end);
-  
-  struct CommentInfo {
-    CommentInfo();
-    ~CommentInfo();
-
-    void setComment(const char* text, size_t len);
-
-    char* comment_;
-  };
 
   // struct MemberNamesTransform
   //{
@@ -649,7 +647,22 @@ private:
     unsigned int allocated_ : 1;
   } bits_;
 
-  CommentInfo* comments_;
+  class Comments {
+  public:
+    Comments() = default;
+    Comments(const Comments& that);
+    Comments(Comments&& that);
+    Comments& operator=(const Comments& that);
+    Comments& operator=(Comments&& that);
+    bool has(CommentPlacement slot) const;
+    String get(CommentPlacement slot) const;
+    void set(CommentPlacement slot, String s);
+
+  private:
+    using Array = std::array<String, numberOfCommentPlacement>;
+    std::unique_ptr<Array> ptr_;
+  };
+  Comments comments_;
 
   // [start, limit) byte offsets in the source JSON text from which this Value
   // was extracted.

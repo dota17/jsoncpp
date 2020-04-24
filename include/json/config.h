@@ -13,8 +13,8 @@
 #include <string>
 
 #if JSONCPP_VER_11
-#include <cstddef>   // typedef ptrdiff_t
-#include <cstdint>   // typedef int64_t, uint64_t
+#include <cstddef> // typedef ptrdiff_t
+#include <cstdint> // typedef int64_t, uint64_t
 #else
 #include <stddef.h>
 #include <stdint.h>
@@ -77,14 +77,13 @@ extern JSON_API int msvc_pre1900_c99_snprintf(char* outBuf, size_t size,
 #define JSONCPP_OP_EXPLICIT
 #endif
 
-
 // These Macros are maintained for backwards compatibility of external tools.
 #if (defined(_MSC_VER) && _MSC_VER >= 1900) ||                                 \
     (defined(__GNUC__) && __cplusplus >= 201103L) ||                           \
-    (defined(__clang__) && __clang_major__ == 3 && __clang_minor__ > 3 )
+    (defined(__clang__) && __clang_major__ == 3 && __clang_minor__ > 3)
 
 #define JSONCPP_VER_11 1
-#else 
+#else
 #define JSONCPP_VER_11 0
 #endif
 

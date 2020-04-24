@@ -210,7 +210,8 @@ private:
                               unsigned int& unicode);
   bool decodeUnicodeEscapeSequence(Token& token, Location& current,
                                    Location end, unsigned int& unicode);
-  bool addError(const String& message, Token& token, Location extra = JSONCPP_NULL);
+  bool addError(const String& message, Token& token,
+                Location extra = JSONCPP_NULL);
   bool recoverFromError(TokenType skipUntilToken);
   bool addErrorAndRecover(const String& message, Token& token,
                           TokenType skipUntilToken);

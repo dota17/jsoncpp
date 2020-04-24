@@ -83,9 +83,9 @@ struct ValueTest : JsonTest::TestCase {
   ValueTest()
       : emptyArray_(Json::arrayValue), emptyObject_(Json::objectValue),
         integer_(123456789), unsignedInteger_(34567890u),
-    smallUnsignedInteger_(Json::Value::UInt(Json::Value::maxInt)),
-    real_(1234.56789), float_(0.00390625f), emptyString_(""), string1_("a"),
-    string_("sometext with space"), true_(true), false_(false) {
+        smallUnsignedInteger_(Json::Value::UInt(Json::Value::maxInt)),
+        real_(1234.56789), float_(0.00390625f), emptyString_(""), string1_("a"),
+        string_("sometext with space"), true_(true), false_(false) {
     array1_.append(1234);
     object1_["id"] = 1234;
   }
@@ -132,7 +132,8 @@ Json::String ValueTest::normalizeFloatingPointStr(const Json::String& s) {
   std::size_t signWidth = (s[index + 1] == '+' || s[index + 1] == '-') ? 1 : 0;
   std::string::size_type exponentStartIndex = index + 1 + signWidth;
   Json::String normalized = s.substr(0, exponentStartIndex);
-  std::string::size_type indexDigit = s.find_first_not_of('0', exponentStartIndex);
+  std::string::size_type indexDigit =
+      s.find_first_not_of('0', exponentStartIndex);
   Json::String exponent = "0";
   if (indexDigit != s.npos) { // nonzero exponent
     exponent = s.substr(indexDigit);
@@ -162,8 +163,8 @@ JSONTEST_FIXTURE_LOCAL(ValueTest, checkNormalizeFloatingPointStr) {
       {"1234e+100", "1234e+100"},
       {"1234e-100", "1234e-100"},
   };
-  for (unsigned int index = 0; index < sizeof(testData)/sizeof(testData[0]);
-        ++index) {
+  for (unsigned int index = 0; index < sizeof(testData) / sizeof(testData[0]);
+       ++index) {
     const struct TestData td = testData[index];
     JSONTEST_ASSERT_STRING_EQUAL(normalizeFloatingPointStr(td.in), td.out);
   }
@@ -3522,8 +3523,8 @@ JSONTEST_FIXTURE_LOCAL(CharReaderAllowSpecialFloatsTest, issue209) {
       {__LINE__, true, "{\"a\":-Infinity}"},  //
       {__LINE__, true, "{\"a\":+Infinity}"}   //
   };
-  for (unsigned int index = 0; index < sizeof(test_data)/sizeof(test_data[0]);
-        ++index) {
+  for (unsigned int index = 0; index < sizeof(test_data) / sizeof(test_data[0]);
+       ++index) {
     const struct TestData td = test_data[index];
     bool ok = reader->parse(&*td.in.begin(), &*td.in.begin() + td.in.size(),
                             &root, &errs);
@@ -3643,8 +3644,8 @@ JSONTEST_FIXTURE_LOCAL(IteratorTest, decrement) {
     values.push_back(it->asString());
   }
   JSONTEST_ASSERT(values.size() == expected.size());
-  for(unsigned int i = 0; i < expected.size(); i++) {
-      JSONTEST_ASSERT(values.at(i) == expected.at(i));
+  for (unsigned int i = 0; i < expected.size(); i++) {
+    JSONTEST_ASSERT(values.at(i) == expected.at(i));
   }
 }
 
@@ -3663,8 +3664,8 @@ JSONTEST_FIXTURE_LOCAL(IteratorTest, reverseIterator) {
   expected.push_back("b");
   expected.push_back("a");
   JSONTEST_ASSERT(values.size() == expected.size());
-  for(unsigned int i = 0; i < expected.size(); i++) {
-      JSONTEST_ASSERT(values.at(i) == expected.at(i));
+  for (unsigned int i = 0; i < expected.size(); i++) {
+    JSONTEST_ASSERT(values.at(i) == expected.at(i));
   }
 }
 

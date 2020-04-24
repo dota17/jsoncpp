@@ -132,10 +132,10 @@ String valueToString(double value, bool useSpecialFloats,
 
   String buffer(size_t(36), '\0');
   while (true) {
-    int len = jsoncpp_snprintf(
-        &*buffer.begin(), buffer.size(),
-        (precisionType == significantDigits) ? "%.*g" : "%.*f",
-        precision, value);
+    int len =
+        jsoncpp_snprintf(&*buffer.begin(), buffer.size(),
+                         (precisionType == significantDigits) ? "%.*g" : "%.*f",
+                         precision, value);
     assert(len >= 0);
     size_t wouldPrint = static_cast<size_t>(len);
     if (wouldPrint >= buffer.size()) {
@@ -353,7 +353,8 @@ Writer::~Writer() {}
 // //////////////////////////////////////////////////////////////////
 
 FastWriter::FastWriter()
-    :yamlCompatibilityEnabled_(false), dropNullPlaceholders_(false), omitEndingLineFeed_(false) {}
+    : yamlCompatibilityEnabled_(false), dropNullPlaceholders_(false),
+      omitEndingLineFeed_(false) {}
 
 void FastWriter::enableYAMLCompatibility() { yamlCompatibilityEnabled_ = true; }
 
@@ -641,8 +642,9 @@ bool StyledWriter::hasCommentForValue(const Value& value) {
 // //////////////////////////////////////////////////////////////////
 
 StyledStreamWriter::StyledStreamWriter(String indentation)
-    : document_(JSONCPP_NULL), rightMargin_(74), indentation_(JSONCPP_MOVE(indentation)),
-      addChildValues_(), indented_(false) {}
+    : document_(JSONCPP_NULL), rightMargin_(74),
+      indentation_(JSONCPP_MOVE(indentation)), addChildValues_(),
+      indented_(false) {}
 
 void StyledStreamWriter::write(OStream& out, const Value& root) {
   document_ = &out;
@@ -912,7 +914,8 @@ BuiltStyledStreamWriter::BuiltStyledStreamWriter(
     String nullSymbol, String endingLineFeedSymbol, bool useSpecialFloats,
     bool emitUTF8, unsigned int precision, PrecisionType precisionType)
     : rightMargin_(74), indentation_(JSONCPP_MOVE(indentation)), cs_(cs),
-      colonSymbol_(JSONCPP_MOVE(colonSymbol)), nullSymbol_(JSONCPP_MOVE(nullSymbol)),
+      colonSymbol_(JSONCPP_MOVE(colonSymbol)),
+      nullSymbol_(JSONCPP_MOVE(nullSymbol)),
       endingLineFeedSymbol_(JSONCPP_MOVE(endingLineFeedSymbol)),
       addChildValues_(false), indented_(false),
       useSpecialFloats_(useSpecialFloats), emitUTF8_(emitUTF8),

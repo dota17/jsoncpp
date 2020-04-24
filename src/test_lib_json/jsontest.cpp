@@ -74,7 +74,7 @@ namespace JsonTest {
 // //////////////////////////////////////////////////////////////////
 
 TestResult::TestResult()
-  : predicateId_(1), lastUsedPredicateId_(0), messageTarget_(JSONCPP_NULL) {
+    : predicateId_(1), lastUsedPredicateId_(0), messageTarget_(JSONCPP_NULL) {
   // The root predicate has id 0
   rootPredicateNode_.id_ = 0;
   rootPredicateNode_.next_ = JSONCPP_NULL;
@@ -122,7 +122,8 @@ void TestResult::addFailureInfo(const char* file, unsigned int line,
 
 TestResult& TestResult::popPredicateContext() {
   PredicateContext* lastNode = &rootPredicateNode_;
-  while (lastNode->next_ != JSONCPP_NULL && lastNode->next_->next_ != JSONCPP_NULL) {
+  while (lastNode->next_ != JSONCPP_NULL &&
+         lastNode->next_->next_ != JSONCPP_NULL) {
     lastNode = lastNode->next_;
   }
   // Set message target to popped failure
