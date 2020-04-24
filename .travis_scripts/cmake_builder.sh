@@ -122,7 +122,7 @@ cd "${_BUILD_DIR_NAME}"
     -DBUILD_WITH_CXX_11=${_BUILD_STANDARD} \
     ../
 
-  # ctest -C ${BUILD_TYPE} -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild ${CTEST_TESTING_OPTION} -D ExperimentalSubmit
+  ctest -C ${BUILD_TYPE} -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild ${CTEST_TESTING_OPTION} -D ExperimentalSubmit
   # Final step is to verify that installation succeeds
   cmake --build . --config ${BUILD_TYPE} --target install
 
