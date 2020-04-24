@@ -1405,18 +1405,20 @@ void Value::Comments::set(CommentPlacement slot, String comment) {
   }
 }
 
-void Value::setComment(String comment, CommentPlacement placement) {
-  if (!comment.empty() && (comment.back() == '\n')) {
-    // Always discard trailing newline, to aid indentation.
-    comment.pop_back();
-  }
-  JSON_ASSERT(!comment.empty());
-  JSON_ASSERT_MESSAGE(
-      comment[0] == '\0' || comment[0] == '/',
-      "in Json::Value::setComment(): Comments must start with /");
-  comments_.set(placement, JSONCPP_MOVE(comment));
+void Value::setComment(const char* comment, CommentPlacement placement) {
+  setComment(comment, strlen(comment), placement);
 }
-
+void Value::setComment(const char* comment, size_t len, CommentPlacement placement) {
+  if ((len > 0) && (comment[len - 1] == '\n')) {
+    // Always discard trailing newline, to aid indentation.
+    len -= 1;
+  }
+  comments_.setComment(placement, String(comment, len));
+}
+/// Comments must be //... or /* ... */
+void Value::setComment(const String& comment, CommentPlacement placement) {
+  setComment(comment.c_str(), comment.length(), placement);
+}
 bool Value::hasComment(CommentPlacement placement) const {
   return comments_.has(placement);
 }

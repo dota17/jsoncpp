@@ -583,15 +583,11 @@ public:
 
   /// \deprecated Always pass len.
   JSONCPP_DEPRECATED("Use setComment(String const&) instead.")
-  void setComment(const char* comment, CommentPlacement placement) {
-    setComment(String(comment, strlen(comment)), placement);
-  }
+  void setComment(const char* comment, CommentPlacement placement);
   /// Comments must be //... or /* ... */
-  void setComment(const char* comment, size_t len, CommentPlacement placement) {
-    setComment(String(comment, len), placement);
-  }
+  void setComment(const char* comment, size_t len, CommentPlacement placement);
   /// Comments must be //... or /* ... */
-  void setComment(String comment, CommentPlacement placement);
+  void setComment(const String& comment, CommentPlacement placement);
   bool hasComment(CommentPlacement placement) const;
   /// Include delimiters and embedded newlines.
   String getComment(CommentPlacement placement) const;
