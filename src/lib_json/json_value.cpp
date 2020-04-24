@@ -1413,7 +1413,7 @@ void Value::setComment(const char* comment, size_t len, CommentPlacement placeme
     // Always discard trailing newline, to aid indentation.
     len -= 1;
   }
-  comments_.setComment(placement, String(comment, len));
+  comments_.set(placement, String(comment, len));
 }
 /// Comments must be //... or /* ... */
 void Value::setComment(const String& comment, CommentPlacement placement) {
