@@ -1116,16 +1116,16 @@ Value& Value::operator[](const StaticString& key) {
 #if JSONCPP_VER_11
 Value& Value::append(const Value& value) { return append(Value(value)); }
 Value& Value::append(Value&& value) {
-#else
-Value& Value::append(const Value& value) {
-#endif
   JSON_ASSERT_MESSAGE(type() == nullValue || type() == arrayValue,
                       "in Json::Value::append: requires arrayValue");
   if (type() == nullValue) {
     *this = Value(arrayValue);
   }
-  return this->value_.map_->emplace(size(), JSONCPP_MOVE(value)).first->second;
+  return this->value_.map_->emplace(size(), std::move(value)).first->second;
 }
+#else
+Value& Value::append(const Value& value) { return (*this)[size()] = value; }
+#endif
 
 #if JSONCPP_VER_11
 bool Value::insert(ArrayIndex index, const Value& newValue) {
