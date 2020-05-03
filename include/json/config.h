@@ -12,7 +12,6 @@
 #include <ostream>
 #include <sstream>
 #include <string>
-#include <type_traits>
 
 // If non-zero, the library uses exceptions to report bad input instead of C
 // assertion macros. The default is to use exceptions.
