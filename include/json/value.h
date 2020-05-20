@@ -567,6 +567,14 @@ Json::Value obj_value(Json::objectValue); // {}
   iterator end();
 
 private:
+
+
+  void setType(ValueType v) { bits_.value_type_ = v; }
+  
+  bool isAllocated() const {return bits_.allocated_; }
+
+  void setIsAllocated(bool v) { bits_.allocated_ = v; }
+
   void initBasic(ValueType type, bool allocated = false);
 
   Value& resolveReference(const char* key);
@@ -598,9 +606,14 @@ private:
     char* string_;  // actually ptr to unsigned, followed by str, unless !allocated_
     ObjectValues* map_;
   } value_;
-  ValueType type_ : 8;
+
+  struct {
+
+  unsigned int value_type_ : 8;
   unsigned int allocated_ : 1; // Notes: if declared as bool, bitfield is useless.
                                // If not allocated_, string_ must be null-terminated.
+  } bits_;
+
   CommentInfo* comments_;
 };
 
