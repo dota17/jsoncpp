@@ -81,6 +81,8 @@ option(JSONCPP_WITH_PKGCONFIG_SUPPORT "Generate and install .pc files" ON)
 option(JSONCPP_WITH_CMAKE_PACKAGE "Generate and install cmake package files" ON)
 option(JSONCPP_WITH_EXAMPLE "Compile JsonCpp example" OFF)
 option(BUILD_SHARED_LIBS "Build jsoncpp_lib as a shared library." OFF)
+option(BUILD_STATIC_LIBS "Build jsoncpp_lib as a static library." ON)
+option(BUILD_OBJECT_LIBS "Build jsoncpp_lib as a object code library." OFF)
 
 # Adhere to GNU filesystem layout conventions
 include(GNUInstallDirs)
