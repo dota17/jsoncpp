@@ -10,16 +10,6 @@
 #include "forwards.h"
 #endif // if !defined(JSON_IS_AMALGAMATION)
 
-// Conditional NORETURN attribute on the throw functions would:
-// a) suppress false positives from static code analysis
-// b) possibly improve optimization opportunities.
-#if !defined(JSONCPP_NORETURN)
-#if defined(_MSC_VER) && _MSC_VER == 1800
-#define JSONCPP_NORETURN __declspec(noreturn)
-#else
-#define JSONCPP_NORETURN [[noreturn]]
-#endif
-#endif
 
 // Support for '= delete' with template declarations was a late addition
 // to the c++11 standard and is rejected by clang 3.8 and Apple clang 8.2
@@ -98,9 +88,9 @@ public:
 #endif
 
 /// used internally
-JSONCPP_NORETURN void throwRuntimeError(String const& msg);
+void throwRuntimeError(String const& msg);
 /// used internally
-JSONCPP_NORETURN void throwLogicError(String const& msg);
+void throwLogicError(String const& msg);
 
 /** \brief Type of the value held by a Value object.
  */
