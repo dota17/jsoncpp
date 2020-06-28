@@ -50,7 +50,7 @@ set(PUBLIC_HEADERS
 
 source_group("Public API" FILES ${PUBLIC_HEADERS})
 
-set(jsoncpp_sources
+set(JSONCPP_SOURCES
     json_tool.h
     json_reader.cpp
     json_valueiterator.inl
@@ -65,54 +65,40 @@ else()
     set(INSTALL_EXPORT)
 endif()
 
-if(BUILD_OBJECT_LIBS)
-    add_library(jsoncpp_lib_object OBJECT ${PUBLIC_HEADERS} ${jsoncpp_sources})
-    set_target_properties(jsoncpp_lib_object PROPERTIES VERSION ${JSONCPP_VERSION} SOVERSION ${JSONCPP_SOVERSION})
-    # avoid name clashes on windows as the shared import lib is also named jsoncpp.lib
-    if(NOT DEFINED STATIC_SUFFIX AND BUILD_SHARED_LIBS)
-        set(STATIC_SUFFIX "_object")
-    endif()
-    set_target_properties(jsoncpp_lib_object PROPERTIES OUTPUT_NAME jsoncpp${STATIC_SUFFIX}
-                                             DEBUG_OUTPUT_NAME jsoncpp${STATIC_SUFFIX}${DEBUG_LIBNAME_SUFFIX})
-
-    install( TARGETS jsoncpp_lib_object ${INSTALL_EXPORT}
-             RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-             LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-             ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-             OBJECTS DESTINATION ${CMAKE_INSTALL_LIBDIR})
-    if(NOT CMAKE_VERSION VERSION_LESS 2.8.11)
-        target_include_directories( jsoncpp_lib_object PUBLIC
-                                $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-                                $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/${JSONCPP_INCLUDE_DIR}>
-                                )
-    endif()
-endif()
-
 if(BUILD_SHARED_LIBS)
     if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12.0)
         add_compile_definitions(JSON_DLL_BUILD)
     else()
         add_definitions(-DJSON_DLL_BUILD)
     endif()
+    set(SHARED_LIB ${PROJECT_NAME}_shared)
+    add_library(${SHARED_LIB} SHARED ${PUBLIC_HEADERS} ${JSONCPP_SOURCES})
+
+    set_target_properties(${SHARED_LIB} PROPERTIES OUTPUT_NAME jsoncpp)
+    list(APPEND CMAKE_TARGETS ${SHARED_LIB})
 endif()
 
-add_library(jsoncpp_lib ${PUBLIC_HEADERS} ${jsoncpp_sources})
-set_target_properties( jsoncpp_lib PROPERTIES
-    OUTPUT_NAME jsoncpp
-    VERSION ${JSONCPP_VERSION}
-    SOVERSION ${JSONCPP_SOVERSION}
-    POSITION_INDEPENDENT_CODE ON
-)
+if(BUILD_STATIC_LIBS)
+    set(STATIC_LIB ${PROJECT_NAME}_static)
+    add_library(${STATIC_LIB} STATIC ${PUBLIC_HEADERS} ${JSONCPP_SOURCES})
+    set_target_properties( ${STATIC_LIB} PROPERTIES
+        OUTPUT_NAME jsoncpp
+        VERSION ${JSONCPP_VERSION}
+        SOVERSION ${JSONCPP_SOVERSION}
+        POSITION_INDEPENDENT_CODE ON
+    )
+    list(APPEND CMAKE_TARGETS ${STATIC_LIB})
+endif()
 
 # Set library's runtime search path on OSX
 if(APPLE)
-    set_target_properties(jsoncpp_lib PROPERTIES INSTALL_RPATH "@loader_path/.")
+    set_target_properties(${CMAKE_TARGETS} PROPERTIES INSTALL_RPATH "@loader_path/.")
 endif()
 
 # Specify compiler features required when compiling a given target.
 # See https://cmake.org/cmake/help/v3.1/prop_gbl/CMAKE_CXX_KNOWN_FEATURES.html#prop_gbl:CMAKE_CXX_KNOWN_FEATURES
 # for complete list of features available
-target_compile_features(jsoncpp_lib PUBLIC
+target_compile_features(${STATIC_LIB} PUBLIC
         cxx_std_11 # Compiler mode is aware of C++ 11.
         #MSVC 1900 cxx_alignas # Alignment control alignas, as defined in N2341.
         #MSVC 1900 cxx_alignof # Alignment control alignof, as defined in N2341.
@@ -159,16 +145,41 @@ target_compile_features(jsoncpp_lib PUBLIC
         cxx_variadic_templates # Variadic templates, as defined in N2242.
 )
 
-install(TARGETS jsoncpp_lib ${INSTALL_EXPORT}
+install(TARGETS ${CMAKE_TARGETS} ${INSTALL_EXPORT}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
 if(NOT CMAKE_VERSION VERSION_LESS 2.8.11)
-    target_include_directories(jsoncpp_lib PUBLIC
+    target_include_directories(${STATIC_LIB} PUBLIC
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/${JSONCPP_INCLUDE_DIR}>
         $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include/json>
     )
 endif()
+
+if(BUILD_OBJECT_LIBS)
+    set(OBJECT_LIB ${PROJECT_NAME}_object)
+    add_library(${OBJECT_LIB} OBJECT ${PUBLIC_HEADERS} ${JSONCPP_SOURCES})
+    set_target_properties(${OBJECT_LIB} PROPERTIES VERSION ${JSONCPP_VERSION} SOVERSION ${JSONCPP_SOVERSION})
+    # avoid name clashes on windows as the shared import lib is also named jsoncpp.lib
+    if(NOT DEFINED STATIC_SUFFIX AND BUILD_SHARED_LIBS)
+        set(STATIC_SUFFIX "_object")
+    endif()
+    set_target_properties(${OBJECT_LIB} PROPERTIES OUTPUT_NAME jsoncpp${STATIC_SUFFIX}
+                                             DEBUG_OUTPUT_NAME jsoncpp${STATIC_SUFFIX}${DEBUG_LIBNAME_SUFFIX})
+
+    install( TARGETS ${OBJECT_LIB} ${INSTALL_EXPORT}
+             RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+             LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+             ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+             OBJECTS DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    if(NOT CMAKE_VERSION VERSION_LESS 2.8.11)
+        target_include_directories( ${OBJECT_LIB} PUBLIC
+                                $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+                                $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/${JSONCPP_INCLUDE_DIR}>
+                                )
+    endif()
+endif()
+
