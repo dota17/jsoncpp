@@ -171,19 +171,15 @@ if(BUILD_STATIC_LIBS)
     list(APPEND CMAKE_TARGETS ${STATIC_LIB})
 endif()
 
-
-
-
 if(BUILD_OBJECT_LIBS)
     set(OBJECT_LIB ${PROJECT_NAME}_object)
     add_library(${OBJECT_LIB} OBJECT ${PUBLIC_HEADERS} ${JSONCPP_SOURCES})
-    set_target_properties(${OBJECT_LIB} PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${PROJECT_SOVERSION})
     # avoid name clashes on windows as the shared import lib is also named jsoncpp.lib
-    if(NOT DEFINED STATIC_SUFFIX AND BUILD_SHARED_LIBS)
-        set(STATIC_SUFFIX "_object")
+    if(NOT DEFINED LIB_SUFFIX)
+        set(LIB_SUFFIX "_object")
     endif()
-    set_target_properties(${OBJECT_LIB} PROPERTIES OUTPUT_NAME jsoncpp${STATIC_SUFFIX}
-                                             DEBUG_OUTPUT_NAME jsoncpp${STATIC_SUFFIX}${DEBUG_LIBNAME_SUFFIX})
+    set_target_properties(${OBJECT_LIB} PROPERTIES OUTPUT_NAME jsoncpp${LIB_SUFFIX}
+                                             DEBUG_OUTPUT_NAME jsoncpp${LIB_SUFFIX}${DEBUG_LIBNAME_SUFFIX})
     target_compile_features(${OBJECT_LIB} PUBLIC ${REQUIRED_FEATURES})
     if(NOT CMAKE_VERSION VERSION_LESS 2.8.11)
         target_include_directories(${OBJECT_LIB} PUBLIC
