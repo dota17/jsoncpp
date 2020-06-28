@@ -125,7 +125,7 @@ if(BUILD_SHARED_LIBS)
     set(SHARED_LIB ${PROJECT_NAME}_shared)
     add_library(${SHARED_LIB} SHARED ${PUBLIC_HEADERS} ${JSONCPP_SOURCES})
 
-    set_target_properties( ${SHARED_LIB} PROPERTIES
+    set_target_properties(${SHARED_LIB} PROPERTIES
         OUTPUT_NAME jsoncpp
         VERSION ${PROJECT_VERSION}
         SOVERSION ${PROJECT_SOVERSION}
@@ -149,7 +149,7 @@ endif()
 if(BUILD_STATIC_LIBS)
     set(STATIC_LIB ${PROJECT_NAME}_static)
     add_library(${STATIC_LIB} STATIC ${PUBLIC_HEADERS} ${JSONCPP_SOURCES})
-    set_target_properties( ${STATIC_LIB} PROPERTIES
+    set_target_properties(${STATIC_LIB} PROPERTIES
         OUTPUT_NAME jsoncpp
         VERSION ${PROJECT_VERSION}
         SOVERSION ${PROJECT_SOVERSION}
