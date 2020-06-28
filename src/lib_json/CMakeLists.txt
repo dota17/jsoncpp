@@ -184,6 +184,7 @@ if(BUILD_OBJECT_LIBS)
     endif()
     set_target_properties(${OBJECT_LIB} PROPERTIES OUTPUT_NAME jsoncpp${STATIC_SUFFIX}
                                              DEBUG_OUTPUT_NAME jsoncpp${STATIC_SUFFIX}${DEBUG_LIBNAME_SUFFIX})
+    target_compile_features(${OBJECT_LIB} PUBLIC ${REQUIRED_FEATURES})
     if(NOT CMAKE_VERSION VERSION_LESS 2.8.11)
         target_include_directories(${OBJECT_LIB} PUBLIC
             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
