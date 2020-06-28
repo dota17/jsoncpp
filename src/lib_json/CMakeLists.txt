@@ -74,7 +74,11 @@ if(BUILD_SHARED_LIBS)
     set(SHARED_LIB ${PROJECT_NAME}_shared)
     add_library(${SHARED_LIB} SHARED ${PUBLIC_HEADERS} ${JSONCPP_SOURCES})
 
-    set_target_properties(${SHARED_LIB} PROPERTIES OUTPUT_NAME jsoncpp)
+    set_target_properties( ${SHARED_LIB} PROPERTIES
+        OUTPUT_NAME jsoncpp
+        VERSION ${PROJECT_VERSION}
+        SOVERSION ${PROJECT_SOVERSION}
+    )
     list(APPEND CMAKE_TARGETS ${SHARED_LIB})
 endif()
 
@@ -83,8 +87,8 @@ if(BUILD_STATIC_LIBS)
     add_library(${STATIC_LIB} STATIC ${PUBLIC_HEADERS} ${JSONCPP_SOURCES})
     set_target_properties( ${STATIC_LIB} PROPERTIES
         OUTPUT_NAME jsoncpp
-        VERSION ${JSONCPP_VERSION}
-        SOVERSION ${JSONCPP_SOVERSION}
+        VERSION ${PROJECT_VERSION}
+        SOVERSION ${PROJECT_SOVERSION}
         POSITION_INDEPENDENT_CODE ON
     )
     list(APPEND CMAKE_TARGETS ${STATIC_LIB})
@@ -92,7 +96,7 @@ endif()
 
 # Set library's runtime search path on OSX
 if(APPLE)
-    set_target_properties(${CMAKE_TARGETS} PROPERTIES INSTALL_RPATH "@loader_path/.")
+    set_target_properties(${STATIC_LIB} PROPERTIES INSTALL_RPATH "@loader_path/.")
 endif()
 
 # Specify compiler features required when compiling a given target.
@@ -162,7 +166,7 @@ endif()
 if(BUILD_OBJECT_LIBS)
     set(OBJECT_LIB ${PROJECT_NAME}_object)
     add_library(${OBJECT_LIB} OBJECT ${PUBLIC_HEADERS} ${JSONCPP_SOURCES})
-    set_target_properties(${OBJECT_LIB} PROPERTIES VERSION ${JSONCPP_VERSION} SOVERSION ${JSONCPP_SOVERSION})
+    set_target_properties(${OBJECT_LIB} PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${PROJECT_SOVERSION})
     # avoid name clashes on windows as the shared import lib is also named jsoncpp.lib
     if(NOT DEFINED STATIC_SUFFIX AND BUILD_SHARED_LIBS)
         set(STATIC_SUFFIX "_object")
