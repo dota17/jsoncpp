@@ -10,7 +10,6 @@
 #include "forwards.h"
 #endif // if !defined(JSON_IS_AMALGAMATION)
 
-
 // Support for '= delete' with template declarations was a late addition
 // to the c++11 standard and is rejected by clang 3.8 and Apple clang 8.2
 // even though these declare themselves to be c++11 compilers.
