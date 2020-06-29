@@ -68,12 +68,6 @@ endif()
 if(BUILD_OBJECT_LIBS)
     add_library(jsoncpp_lib_object OBJECT ${PUBLIC_HEADERS} ${jsoncpp_sources})
     set_target_properties(jsoncpp_lib_object PROPERTIES VERSION ${JSONCPP_VERSION} SOVERSION ${JSONCPP_SOVERSION})
-    # avoid name clashes on windows as the shared import lib is also named jsoncpp.lib
-    if(NOT DEFINED STATIC_SUFFIX AND BUILD_SHARED_LIBS)
-        set(STATIC_SUFFIX "_object")
-    endif()
-    set_target_properties(jsoncpp_lib_object PROPERTIES OUTPUT_NAME jsoncpp${STATIC_SUFFIX}
-                                             DEBUG_OUTPUT_NAME jsoncpp${STATIC_SUFFIX}${DEBUG_LIBNAME_SUFFIX})
 
     install( TARGETS jsoncpp_lib_object ${INSTALL_EXPORT}
              RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
