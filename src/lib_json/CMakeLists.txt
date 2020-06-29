@@ -122,7 +122,7 @@ if(BUILD_SHARED_LIBS)
         add_definitions(-DJSON_DLL_BUILD)
     endif()
 
-    set(SHARED_LIB ${PROJECT_NAME}_shared)
+    set(SHARED_LIB ${PROJECT_NAME}_lib)
     add_library(${SHARED_LIB} SHARED ${PUBLIC_HEADERS} ${JSONCPP_SOURCES})
 
     set_target_properties(${SHARED_LIB} PROPERTIES
@@ -164,10 +164,6 @@ if(BUILD_STATIC_LIBS)
         )
     endif()
 
-    # Set library's runtime search path on OSX
-    if(APPLE)
-        set_target_properties(${STATIC_LIB} PROPERTIES INSTALL_RPATH "@loader_path/.")
-    endif()
     list(APPEND CMAKE_TARGETS ${STATIC_LIB})
 endif()
 
