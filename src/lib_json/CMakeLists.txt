@@ -149,10 +149,15 @@ endif()
 if(BUILD_STATIC_LIBS)
     set(STATIC_LIB ${PROJECT_NAME}_static)
     add_library(${STATIC_LIB} STATIC ${PUBLIC_HEADERS} ${JSONCPP_SOURCES})
+    # avoid name clashes on windows as the shared import lib is also named jsoncpp.lib
+    if(NOT DEFINED STATIC_SUFFIX)
+        set(STATIC_SUFFIX "_static")
+    endif()
     set_target_properties(${STATIC_LIB} PROPERTIES
         OUTPUT_NAME jsoncpp
         VERSION ${PROJECT_VERSION}
         SOVERSION ${PROJECT_SOVERSION}
+        DEBUG_OUTPUT_NAME jsoncpp${LIB_SUFFIX}${DEBUG_LIBNAME_SUFFIX}
         POSITION_INDEPENDENT_CODE ON
     )
     target_compile_features(${STATIC_LIB} PUBLIC ${REQUIRED_FEATURES})
