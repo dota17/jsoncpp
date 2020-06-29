@@ -149,12 +149,13 @@ endif()
 if(BUILD_STATIC_LIBS)
     set(STATIC_LIB ${PROJECT_NAME}_static)
     add_library(${STATIC_LIB} STATIC ${PUBLIC_HEADERS} ${JSONCPP_SOURCES})
-    set_target_properties(${STATIC_LIB} PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${PROJECT_SOVERSION})
+
     # avoid name clashes on windows as the shared import lib is also named jsoncpp.lib
     if(NOT DEFINED STATIC_SUFFIX)
         set(STATIC_SUFFIX "_static")
     endif()
     set_target_properties(${STATIC_LIB} PROPERTIES
+        VERSION ${PROJECT_VERSION}
         OUTPUT_NAME jsoncpp${STATIC_SUFFIX}
         POSITION_INDEPENDENT_CODE ON
     )
@@ -172,6 +173,7 @@ endif()
 if(BUILD_OBJECT_LIBS)
     set(OBJECT_LIB ${PROJECT_NAME}_object)
     add_library(${OBJECT_LIB} OBJECT ${PUBLIC_HEADERS} ${JSONCPP_SOURCES})
+    set_target_properties(${SHARED_LIB} PROPERTIES VERSION ${PROJECT_VERSION})
 
     target_compile_features(${OBJECT_LIB} PUBLIC ${REQUIRED_FEATURES})
     if(NOT CMAKE_VERSION VERSION_LESS 2.8.11)

@@ -114,7 +114,7 @@ cd "${_BUILD_DIR_NAME}"
     -DCMAKE_INSTALL_PREFIX:PATH=${DESTDIR} \
     ../
 
-  ctest -C ${BUILD_TYPE} -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild ${CTEST_TESTING_OPTION} -D ExperimentalSubmit -V
+  ctest -C ${BUILD_TYPE} -D ExperimentalStart -D ExperimentalConfigure -D ExperimentalBuild ${CTEST_TESTING_OPTION} -D ExperimentalSubmit
   # Final step is to verify that installation succeeds
   cmake --build . --config ${BUILD_TYPE} --target install
 
