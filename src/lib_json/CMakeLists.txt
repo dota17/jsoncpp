@@ -65,6 +65,28 @@ else()
     set(INSTALL_EXPORT)
 endif()
 
+if(BUILD_OBJECT_LIBS)
+    add_library(jsoncpp_lib_object OBJECT ${PUBLIC_HEADERS} ${jsoncpp_sources})
+    set_target_properties(jsoncpp_lib_object PROPERTIES VERSION ${JSONCPP_VERSION} SOVERSION ${JSONCPP_SOVERSION})
+    # avoid name clashes on windows as the shared import lib is also named jsoncpp.lib
+    if(NOT DEFINED STATIC_SUFFIX AND BUILD_SHARED_LIBS)
+        set(STATIC_SUFFIX "_object")
+    endif()
+    set_target_properties(jsoncpp_lib_object PROPERTIES OUTPUT_NAME jsoncpp${STATIC_SUFFIX}
+                                             DEBUG_OUTPUT_NAME jsoncpp${STATIC_SUFFIX}${DEBUG_LIBNAME_SUFFIX})
+
+    install( TARGETS jsoncpp_lib_object ${INSTALL_EXPORT}
+             RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+             LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+             ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+             OBJECTS DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    if(NOT CMAKE_VERSION VERSION_LESS 2.8.11)
+        target_include_directories( jsoncpp_lib_object PUBLIC
+                                $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+                                $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/${JSONCPP_INCLUDE_DIR}>
+                                )
+    endif()
+endif()
 
 if(BUILD_SHARED_LIBS)
     if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12.0)
