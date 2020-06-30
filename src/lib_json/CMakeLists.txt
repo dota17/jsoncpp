@@ -163,7 +163,7 @@ if(BUILD_STATIC_LIBS)
     endif()
     set_target_properties(${STATIC_LIB} PROPERTIES
         VERSION ${PROJECT_VERSION}
-        OUTPUT_NAME jsoncpp
+        OUTPUT_NAME jsoncpp${STATIC_SUFFIX}
         POSITION_INDEPENDENT_CODE ON
     )
     target_compile_features(${STATIC_LIB} PUBLIC ${REQUIRED_FEATURES})
@@ -187,7 +187,7 @@ endif()
 if(BUILD_OBJECT_LIBS)
     set(OBJECT_LIB ${PROJECT_NAME}_object)
     add_library(${OBJECT_LIB} OBJECT ${PUBLIC_HEADERS} ${JSONCPP_SOURCES})
-    set_target_properties(${SHARED_LIB} PROPERTIES VERSION ${PROJECT_VERSION})
+    set_target_properties(${SHARED_LIB} PROPERTIES OUTPUT_NAME jsoncpp VERSION ${PROJECT_VERSION})
 
     target_compile_features(${OBJECT_LIB} PUBLIC ${REQUIRED_FEATURES})
 
