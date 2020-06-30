@@ -163,7 +163,7 @@ if(BUILD_STATIC_LIBS)
     endif()
     set_target_properties(${STATIC_LIB} PROPERTIES
         VERSION ${PROJECT_VERSION}
-        OUTPUT_NAME jsoncpp${STATIC_SUFFIX}
+        OUTPUT_NAME jsoncpp
         POSITION_INDEPENDENT_CODE ON
     )
     target_compile_features(${STATIC_LIB} PUBLIC ${REQUIRED_FEATURES})
