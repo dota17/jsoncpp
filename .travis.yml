@@ -162,7 +162,7 @@ matrix:
         CXX=clang++
         DO_MemCheck=ON
         BUILD_TOOL="Unix Makefiles"
-        LIB_TYPE=static
+        LIB_TYPE=shared
         BUILD_TYPE=release
         DESTDIR=/tmp/cmake_json_cpp
         LANGUAGE_STANDARD="11"
@@ -176,7 +176,7 @@ matrix:
         CXX=clang++
         DO_MemCheck=ON
         BUILD_TOOL="Unix Makefiles"
-        LIB_TYPE=static
+        LIB_TYPE=shared
         BUILD_TYPE=release
         DESTDIR=/tmp/cmake_json_cpp
         LANGUAGE_STANDARD="98"
